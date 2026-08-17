@@ -4,9 +4,10 @@ import RoomTypeSelector from '../common/RoomTypeSelector'
 import { Link } from 'react-router-dom';
 const AddRoom = () => {
     const [newRoom, setNewRoom] = useState({
-        photo: null,
+        imageRoom: null,
         roomType: "",
-        roomPrice: ""
+        roomPrice: "",
+        isBook: ""
     })
 
     const [imagePrview, setImagePreview] = useState("");
@@ -28,17 +29,17 @@ const AddRoom = () => {
     
     const handleImageChange = (e) => {
         const selectedImage = e.target.files[0];
-        setNewRoom({ ...newRoom, photo: selectedImage});
+        setNewRoom({ ...newRoom, imageRoom: selectedImage});
         setImagePreview(URL.createObjectURL(selectedImage));
     }
 
     const handleSubmit = async(e) => {
         e.preventDefault();
         try {
-            const success = await addRoom(newRoom.photo, newRoom.roomType, newRoom.roomPrice)
+            const success = await addRoom(newRoom.imageRoom, newRoom.roomType, newRoom.roomPrice, newRoom.isBook)
             if (success !== undefined) {
                 setSuccessMessage("A new room was added to the database.");
-                setNewRoom({ photo: null, roomType: "", roomPrice: "" })
+                setNewRoom({ imageRoom: null, roomType: "", roomPrice: "", isBook: ""})
                 setImagePreview("");
                 setErrorMessage("");
             }else{

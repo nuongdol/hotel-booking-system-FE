@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import BookingForm from "./BookingForm";
-import { getRoomById } from "../utils/ApiFunctions";
+// import { getRoomById } from "../utils/ApiFunctions";
 import { useParams } from "react-router-dom";
 import { FaWifi, FaTv, FaUtensils, FaWineGlass, FaCar, FaParking, FaTshirt } from "react-icons/fa"
 import RoomCarousel from "../common/RoomCarousel";

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { deleteUser, getBookingsByUserEmail, getUser } from "../utils/ApiFunctions"
+// import { deleteUser, getBookingsByUserEmail, getUser } from "../utils/ApiFunctions"
 import { useNavigate } from "react-router-dom"
 import moment from "moment"
 

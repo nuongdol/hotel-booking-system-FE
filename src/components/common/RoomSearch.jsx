@@ -3,7 +3,7 @@
 import React, { useState } from "react"
 import { Form, Button, Row, Col, Container } from "react-bootstrap"
 import moment from "moment"
-import { getAvailableRooms } from "../utils/ApiFunctions"
+// import { getAvailableRooms } from "../utils/ApiFunctions"
 import RoomSearchResult from "./RoomSearchResult"
 import RoomTypeSelector from "./RoomTypeSelector"
 

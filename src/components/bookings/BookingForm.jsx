@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import { Form, FormControl } from "react-bootstrap";
-import BookingSummary from "./BookingSummary";
+
 
 
 const BookingForm = () => {

@@ -1,3 +1,7 @@
+/* Import Bootstrap CSS & Bootstrap Icons */
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
 body {
   min-height: 100vh;
   padding-bottom: 50px;
@@ -243,4 +247,237 @@ h2 {
   background-color: #3d3b3b;
   height: 200px;
   text-align: center;
+}
+
+/* Custom fine-tuning for the mobile room form design */
+:root {
+  --primary-blue: #0088ff;
+  --primary-blue-hover: #0077e6;
+  --primary-blue-light: #eef7ff;
+  --primary-blue-border: #bfe0ff;
+  --text-dark: #212529;
+  --text-muted: #8c98a4;
+  --bg-page: #f4f6f8;
+  --card-border-color: #eaeef2;
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-dark);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Stepper */
+.step-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+
+.step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.step-circle.active {
+  background-color: var(--primary-blue);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 136, 255, 0.35);
+}
+
+.step-circle.inactive {
+  background-color: #f1f3f5;
+  color: #adb5bd;
+}
+
+.step-circle.completed {
+  background-color: #e6f4ea;
+  color: #137333;
+}
+
+.step-label {
+  font-size: 12px;
+  margin-top: 6px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.step-line {
+  flex: 1;
+  height: 2px;
+  background-color: #dee2e6;
+  margin: 16px 8px 0;
+  z-index: 1;
+}
+
+/* Form Controls Customization */
+.custom-input-group .form-control {
+  border-left: none;
+}
+
+.custom-input-group .input-group-text {
+  background-color: #ffffff;
+  border-right: none;
+  color: #8c98a4;
+}
+
+.custom-input-group .form-control:focus {
+  border-color: #86b7fe;
+  box-shadow: none;
+}
+
+.custom-input-group:focus-within .input-group-text {
+  border-color: #86b7fe;
+}
+
+/* Amenity Box */
+.amenity-card {
+  border: 1px solid var(--card-border-color);
+  border-radius: 10px;
+  padding: 16px 12px;
+  text-align: center;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.18s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 90px;
+  user-select: none;
+}
+
+.amenity-card:hover {
+  border-color: var(--primary-blue-border);
+  background-color: #fafcff;
+}
+
+.amenity-card.selected {
+  border-color: var(--primary-blue);
+  background-color: var(--primary-blue-light);
+  color: var(--primary-blue);
+}
+
+.amenity-card.selected .amenity-icon {
+  color: var(--primary-blue);
+}
+
+.amenity-card .amenity-icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+  color: #495057;
+}
+
+.amenity-card .amenity-title {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Image Upload Cards */
+.image-upload-box {
+  width: 96px;
+  height: 96px;
+  border: 1.5px dashed #0088ff;
+  border-radius: 10px;
+  background-color: #f8fbff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #0088ff;
+  flex-shrink: 0;
+}
+
+.image-upload-box:hover {
+  background-color: #eef7ff;
+  border-color: #0077e6;
+}
+
+.image-placeholder-box {
+  width: 96px;
+  height: 96px;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  background-color: #f1f3f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ced4da;
+  font-size: 28px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.image-preview-box {
+  width: 96px;
+  height: 96px;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+}
+
+.btn-delete-img {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-delete-img:hover {
+  background: #dc3545;
+}
+
+/* Main Action Button */
+.btn-primary-action {
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 13px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.btn-primary-action:hover, .btn-primary-action:focus {
+  background-color: var(--primary-blue-hover);
+  border-color: var(--primary-blue-hover);
+  box-shadow: 0 4px 12px rgba(0, 136, 255, 0.3);
+}
+
+/* Form Container Card */
+.form-card {
+  border: 1px solid #edf0f3;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }

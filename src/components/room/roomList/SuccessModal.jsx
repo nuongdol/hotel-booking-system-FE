@@ -1,7 +1,7 @@
 import React from 'react';
-import { AMENITIES_LIST } from './AmenitiesCard';
+import { AMENITIES_LIST } from './AmenitiesCard.jsx';
 
-export const SuccessModal = ({ show, onClose, data, onReset }) => {
+export const SuccessModal = ({ show, onClose, data, onReset, onGoToBooking }) => {
   if (!show) return null;
 
   const selectedAmenityLabels = (data.amenities || []).map(
@@ -80,24 +80,40 @@ export const SuccessModal = ({ show, onClose, data, onReset }) => {
             )}
           </div>
 
-          <div className="modal-footer border-0 pt-0 px-4 pb-4 gap-2">
-            <button
-              type="button"
-              className="btn btn-outline-secondary flex-grow-1 rounded-3 py-2 fw-medium"
-              onClick={() => {
-                onReset();
-                onClose();
-              }}
-            >
-              Thêm phòng khác
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary flex-grow-1 rounded-3 py-2 fw-medium"
-              onClick={onClose}
-            >
-              Hoàn tất
-            </button>
+          <div className="modal-footer border-0 pt-0 px-4 pb-4 flex-column gap-2">
+            {onGoToBooking && (
+              <button
+                type="button"
+                className="btn btn-warning w-100 text-white rounded-3 py-2 fw-semibold d-flex align-items-center justify-content-center gap-2"
+                style={{ backgroundColor: '#f59e0b', borderColor: '#f59e0b' }}
+                onClick={() => {
+                  onClose();
+                  onGoToBooking();
+                }}
+              >
+                <i className="bi bi-file-earmark-check"></i>
+                Xem màn hình Booking Summary
+              </button>
+            )}
+            <div className="d-flex w-100 gap-2">
+              <button
+                type="button"
+                className="btn btn-outline-secondary flex-grow-1 rounded-3 py-2 fw-medium"
+                onClick={() => {
+                  onReset();
+                  onClose();
+                }}
+              >
+                Thêm phòng khác
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary flex-grow-1 rounded-3 py-2 fw-medium"
+                onClick={onClose}
+              >
+                Hoàn tất
+              </button>
+            </div>
           </div>
         </div>
       </div>

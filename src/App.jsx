@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import AddRoom from './components/room/AddRoom'
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css"
@@ -25,7 +23,7 @@ import Logout from './components/auth/Logout.jsx'
 import AuthProvider from './components/auth/AuthProvider.jsx'
 import RequireAuth from './components/auth/RequireAuth.jsx'
 import Attraction from './components/attraction/Attraction.jsx'
-import AddRoomForm from './components/room/AddRoomForm.jsx'
+import RoomListForm from './components/room/RoomListForm.jsx'
 
 function App() {
 	return (
@@ -64,7 +62,9 @@ function App() {
 		// 	<Footer />
 		// </AuthProvider>
 		// <AddRoom/>
-		<AddRoomForm/>
+	
+		// <BookingHotelForm/>
+		<RoomListForm/>
 	)
 }
 

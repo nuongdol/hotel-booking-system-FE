@@ -40,7 +40,7 @@ export default function App() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showCodeModal, setShowCodeModal] = useState(false);
-  const [viewMode, setViewMode] = useState('mobile');
+  const [viewMode, setViewMode] = useState('desktop'); // 'desktop' | 'mobile'
   const [alertMessage, setAlertMessage] = useState(null);
 
   // Field change handler
@@ -143,211 +143,171 @@ export default function App() {
   };
 
   return (
-    <div className="min-vh-100 py-3 py-md-4" style={{ backgroundColor: '#e9eef3' }}>
-      {/* Top Navigation Bar: Screen Switcher & Tools */}
-      <div className="container mb-3" style={{ maxWidth: viewMode === 'mobile' ? '460px' : '1080px' }}>
-        <div className="bg-white p-2 rounded-3 shadow-sm border d-flex flex-column flex-lg-row align-items-center justify-content-between gap-2">
-          {/* Tabs switch */}
-          <div className="btn-group w-100 w-lg-auto overflow-auto flex-nowrap" role="group" style={{ scrollbarWidth: 'thin' }}>
-            <button
-              type="button"
-              id="tab-home"
-              className={`btn btn-sm text-nowrap ${
-                activeScreen === 'home'
-                  ? 'btn-primary fw-bold shadow-sm'
-                  : 'btn-outline-secondary'
-              }`}
-              style={activeScreen === 'home' ? { backgroundColor: '#0062a3', borderColor: '#0062a3' } : {}}
+    <div className="min-vh-100 py-2 py-md-3" style={{ backgroundColor: '#f0f2f5' }}>
+      {/* Top Traveloka Quick Switcher & Toolbar */}
+      <div className="container mb-3" style={{ maxWidth: viewMode === 'mobile' ? '460px' : '1240px' }}>
+        <div className="bg-white p-2.5 rounded-4 shadow-sm border d-flex flex-column flex-xl-row align-items-center justify-content-between gap-2.5">
+          {/* Logo & Navigation Tabs */}
+          <div className="d-flex align-items-center gap-2 w-100 w-xl-auto overflow-auto flex-nowrap pb-1 pb-xl-0">
+            <div
+              className="d-flex align-items-center gap-1.5 px-2 py-1 bg-primary text-white rounded-3 fw-bold flex-shrink-0 cursor-pointer"
+              style={{ backgroundColor: '#0194f3' }}
               onClick={() => setActiveScreen('home')}
             >
-              <i className="bi bi-house-door me-1"></i>
-              Trang chủ
-            </button>
+              <i className="bi bi-airplane-fill fs-6"></i>
+              <span style={{ fontSize: '13px', letterSpacing: '-0.2px' }}>traveloka</span>
+            </div>
 
-            <button
-              type="button"
-              id="tab-dashboard"
-              className={`btn btn-sm text-nowrap ${
-                activeScreen === 'dashboard'
-                  ? 'btn-primary fw-bold shadow-sm'
-                  : 'btn-outline-secondary'
-              }`}
-              style={activeScreen === 'dashboard' ? { backgroundColor: '#0062a3', borderColor: '#0062a3' } : {}}
-              onClick={() => setActiveScreen('dashboard')}
-            >
-              <i className="bi bi-speedometer2 me-1"></i>
-              Dashboard
-            </button>
-
-            <button
-              type="button"
-              id="tab-manage-hotels"
-              className={`btn btn-sm text-nowrap ${
-                activeScreen === 'manage-hotels'
-                  ? 'btn-primary fw-bold shadow-sm'
-                  : 'btn-outline-secondary'
-              }`}
-              style={activeScreen === 'manage-hotels' ? { backgroundColor: '#0062a3', borderColor: '#0062a3' } : {}}
-              onClick={() => setActiveScreen('manage-hotels')}
-            >
-              <i className="bi bi-buildings me-1"></i>
-              QL Khách Sạn
-            </button>
-
-            <button
-              type="button"
-              id="tab-cart"
-              className={`btn btn-sm text-nowrap ${
-                activeScreen === 'cart'
-                  ? 'btn-warning text-dark fw-bold shadow-sm'
-                  : 'btn-outline-secondary'
-              }`}
-              style={activeScreen === 'cart' ? { backgroundColor: '#f59e0b', borderColor: '#f59e0b' } : {}}
-              onClick={() => setActiveScreen('cart')}
-            >
-              <i className="bi bi-cart3 me-1"></i>
-              Giỏ hàng
-            </button>
-
-            <button
-              type="button"
-              id="tab-messages"
-              className={`btn btn-sm text-nowrap ${
-                activeScreen === 'messages' || activeScreen === 'chat-detail'
-                  ? 'btn-warning text-dark fw-bold shadow-sm'
-                  : 'btn-outline-secondary'
-              }`}
-              style={activeScreen === 'messages' || activeScreen === 'chat-detail' ? { backgroundColor: '#f59e0b', borderColor: '#f59e0b' } : {}}
-              onClick={() => setActiveScreen('messages')}
-            >
-              <i className="bi bi-chat-dots-fill me-1"></i>
-              Tin nhắn
-            </button>
-
-            <button
-              type="button"
-              id="tab-hotel-list"
-              className={`btn btn-sm text-nowrap ${
-                activeScreen === 'hotels'
-                  ? 'btn-dark fw-bold shadow-sm'
-                  : 'btn-outline-secondary'
-              }`}
-              onClick={() => setActiveScreen('hotels')}
-            >
-              <i className="bi bi-compass me-1"></i>
-              Khám phá
-            </button>
-
-            <button
-              type="button"
-              id="tab-booking-summary"
-              className={`btn btn-sm text-nowrap ${
-                activeScreen === 'booking'
-                  ? 'btn-warning text-white fw-bold shadow-sm'
-                  : 'btn-outline-secondary'
-              }`}
-              style={activeScreen === 'booking' ? { backgroundColor: '#f59e0b', borderColor: '#f59e0b' } : {}}
-              onClick={() => setActiveScreen('booking')}
-            >
-              <i className="bi bi-receipt me-1"></i>
-              Đặt phòng
-            </button>
-
-            <button
-              type="button"
-              id="tab-checkout"
-              className={`btn btn-sm text-nowrap ${
-                activeScreen === 'checkout'
-                  ? 'btn-dark fw-bold shadow-sm'
-                  : 'btn-outline-secondary'
-              }`}
-              onClick={() => setActiveScreen('checkout')}
-            >
-              <i className="bi bi-credit-card me-1"></i>
-              Thanh toán
-            </button>
-
-            <button
-              type="button"
-              id="tab-auth"
-              className={`btn btn-sm text-nowrap ${
-                activeScreen === 'auth'
-                  ? 'btn-dark fw-bold shadow-sm'
-                  : 'btn-outline-secondary'
-              }`}
-              onClick={() => setActiveScreen('auth')}
-            >
-              <i className="bi bi-box-arrow-in-right me-1"></i>
-              Đăng nhập
-            </button>
-
-            <button
-              type="button"
-              id="tab-add-property"
-              className={`btn btn-sm text-nowrap ${
-                activeScreen === 'add-property'
-                  ? 'btn-info text-white fw-bold shadow-sm'
-                  : 'btn-outline-secondary'
-              }`}
-              style={activeScreen === 'add-property' ? { backgroundColor: '#0ea5e9', borderColor: '#0ea5e9' } : {}}
-              onClick={() => setActiveScreen('add-property')}
-            >
-              <i className="bi bi-building-add me-1"></i>
-              Thêm KS
-            </button>
-
-            <button
-              type="button"
-              id="tab-add-room"
-              className={`btn btn-sm text-nowrap ${
-                activeScreen === 'add-room'
-                  ? 'btn-success fw-bold shadow-sm'
-                  : 'btn-outline-secondary'
-              }`}
-              onClick={() => setActiveScreen('add-room')}
-            >
-              <i className="bi bi-door-open me-1"></i>
-              Thêm Phòng
-            </button>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="d-flex align-items-center justify-content-end gap-2 w-100 w-lg-auto">
-            <button
-              type="button"
-              className="btn btn-sm btn-outline-primary d-flex align-items-center gap-1 text-nowrap"
-              onClick={() => setShowCodeModal(true)}
-              title="Xem và sao chép mã nguồn React JSX"
-            >
-              <i className="bi bi-code-slash"></i>
-              <span>Xem Code JSX</span>
-            </button>
-            {activeScreen === 'add-room' && (
+            <div className="btn-group btn-group-sm rounded-pill border p-0.5 bg-light flex-nowrap" role="group">
               <button
                 type="button"
-                className="btn btn-sm btn-outline-secondary"
-                onClick={handleFillSample}
-                title="Điền mẫu để kiểm tra"
+                id="tab-home"
+                className={`btn btn-sm rounded-pill text-nowrap px-2.5 ${
+                  activeScreen === 'home'
+                    ? 'btn-primary text-white fw-bold shadow-sm'
+                    : 'btn-light border-0 text-dark'
+                }`}
+                style={activeScreen === 'home' ? { backgroundColor: '#0194f3', borderColor: '#0194f3' } : {}}
+                onClick={() => setActiveScreen('home')}
               >
-                <i className="bi bi-magic"></i>
+                <i className="bi bi-house-door me-1"></i>
+                Trang chủ
               </button>
-            )}
-            <button
-              type="button"
-              className="btn btn-sm btn-light border"
-              onClick={() => setViewMode((m) => (m === 'mobile' ? 'responsive' : 'mobile'))}
-              title="Chuyển kích thước xem"
-            >
-              <i className={`bi ${viewMode === 'mobile' ? 'bi-phone' : 'bi-display'}`}></i>
-            </button>
+
+              <button
+                type="button"
+                id="tab-hotel-list"
+                className={`btn btn-sm rounded-pill text-nowrap px-2.5 ${
+                  activeScreen === 'hotels'
+                    ? 'btn-primary text-white fw-bold shadow-sm'
+                    : 'btn-light border-0 text-dark'
+                }`}
+                style={activeScreen === 'hotels' ? { backgroundColor: '#0194f3', borderColor: '#0194f3' } : {}}
+                onClick={() => setActiveScreen('hotels')}
+              >
+                <i className="bi bi-buildings me-1"></i>
+                Khách sạn & Resort
+              </button>
+
+              <button
+                type="button"
+                id="tab-cart"
+                className={`btn btn-sm rounded-pill text-nowrap px-2.5 ${
+                  activeScreen === 'cart'
+                    ? 'btn-warning text-white fw-bold shadow-sm'
+                    : 'btn-light border-0 text-dark'
+                }`}
+                style={activeScreen === 'cart' ? { backgroundColor: '#ff5e1f', borderColor: '#ff5e1f' } : {}}
+                onClick={() => setActiveScreen('cart')}
+              >
+                <i className="bi bi-cart3 me-1"></i>
+                Giỏ hàng
+              </button>
+
+              <button
+                type="button"
+                id="tab-messages"
+                className={`btn btn-sm rounded-pill text-nowrap px-2.5 ${
+                  activeScreen === 'messages' || activeScreen === 'chat-detail'
+                    ? 'btn-primary text-white fw-bold shadow-sm'
+                    : 'btn-light border-0 text-dark'
+                }`}
+                style={activeScreen === 'messages' || activeScreen === 'chat-detail' ? { backgroundColor: '#0194f3', borderColor: '#0194f3' } : {}}
+                onClick={() => setActiveScreen('messages')}
+              >
+                <i className="bi bi-chat-dots me-1"></i>
+                Hỗ trợ & Chat
+              </button>
+
+              <button
+                type="button"
+                id="tab-dashboard"
+                className={`btn btn-sm rounded-pill text-nowrap px-2.5 ${
+                  activeScreen === 'dashboard' || activeScreen === 'manage-hotels'
+                    ? 'btn-dark text-white fw-bold shadow-sm'
+                    : 'btn-light border-0 text-dark'
+                }`}
+                onClick={() => setActiveScreen('dashboard')}
+              >
+                <i className="bi bi-speedometer2 me-1"></i>
+                Quản lý Đối tác
+              </button>
+            </div>
+          </div>
+
+          {/* Device View & Tools Switcher */}
+          <div className="d-flex align-items-center justify-content-between justify-content-xl-end gap-2 w-100 w-xl-auto">
+            {/* View Mode Toggle: Desktop vs Mobile */}
+            <div className="btn-group btn-group-sm rounded-pill border p-0.5 bg-light" role="group">
+              <button
+                type="button"
+                className={`btn btn-sm rounded-pill px-2.5 ${
+                  viewMode === 'desktop'
+                    ? 'btn-primary text-white fw-bold shadow-sm'
+                    : 'btn-light border-0 text-secondary'
+                }`}
+                style={viewMode === 'desktop' ? { backgroundColor: '#0194f3', borderColor: '#0194f3' } : {}}
+                onClick={() => setViewMode('desktop')}
+                title="Xem giao diện máy tính (Desktop)"
+              >
+                <i className="bi bi-laptop me-1"></i>
+                Máy tính
+              </button>
+              <button
+                type="button"
+                className={`btn btn-sm rounded-pill px-2.5 ${
+                  viewMode === 'mobile'
+                    ? 'btn-primary text-white fw-bold shadow-sm'
+                    : 'btn-light border-0 text-secondary'
+                }`}
+                style={viewMode === 'mobile' ? { backgroundColor: '#0194f3', borderColor: '#0194f3' } : {}}
+                onClick={() => setViewMode('mobile')}
+                title="Xem giao diện điện thoại (Mobile)"
+              >
+                <i className="bi bi-phone me-1"></i>
+                Điện thoại
+              </button>
+            </div>
+
+            <div className="d-flex align-items-center gap-1.5">
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-secondary rounded-pill d-flex align-items-center gap-1 text-nowrap"
+                onClick={() => setShowCodeModal(true)}
+                title="Xem mã nguồn React JSX"
+              >
+                <i className="bi bi-code-slash"></i>
+                <span className="d-none d-sm-inline">Mã nguồn</span>
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-secondary rounded-pill d-flex align-items-center gap-1 text-nowrap"
+                onClick={() => setShowHelpModal(true)}
+                title="Hướng dẫn sử dụng"
+              >
+                <i className="bi bi-question-circle"></i>
+                <span className="d-none d-sm-inline">Trợ giúp</span>
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-sm btn-warning text-white rounded-pill d-flex align-items-center gap-1 text-nowrap fw-bold shadow-sm"
+                style={{ backgroundColor: '#ff5e1f', borderColor: '#ff5e1f' }}
+                onClick={() => setActiveScreen('auth')}
+              >
+                <i className="bi bi-person-fill"></i>
+                <span>Tài khoản</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Alert toast message if any */}
+      {/* Floating Alert Message */}
       {alertMessage && (
-        <div className="container mb-2" style={{ maxWidth: viewMode === 'mobile' ? '460px' : '1080px' }}>
-          <div className="alert alert-info py-2 px-3 small d-flex align-items-center justify-content-between mb-0 shadow-sm">
+        <div className="container mb-3" style={{ maxWidth: viewMode === 'mobile' ? '460px' : '1240px' }}>
+          <div className="alert alert-info py-2 px-3 small d-flex align-items-center justify-content-between mb-0 shadow-sm rounded-3">
             <span>
               <i className="bi bi-info-circle-fill me-2"></i>
               {alertMessage}
@@ -361,16 +321,16 @@ export default function App() {
         </div>
       )}
 
-      {/* Main App Container */}
+      {/* Main Responsive App Container */}
       <main
         className="container px-2 px-sm-3"
         style={{
-          maxWidth: viewMode === 'mobile' ? '430px' : '680px',
-          transition: 'max-width 0.25s ease',
+          maxWidth: viewMode === 'mobile' ? '430px' : '1240px',
+          transition: 'max-width 0.3s ease',
         }}
       >
         {activeScreen === 'home' && (
-          /* SCREEN 0: TRANG CHỦ - TRAVELEASE */
+          /* SCREEN 0: TRANG CHỦ - TRAVELOKA */
           <TravelEaseHome
             onSelectHotel={handleSelectHotel}
             onSearch={(searchData) => {
@@ -443,7 +403,7 @@ export default function App() {
         )}
 
         {activeScreen === 'auth' && (
-          /* SCREEN 1: ĐĂNG NHẬP / ĐĂNG KÝ - AZURE HORIZON */
+          /* SCREEN 1: ĐĂNG NHẬP / ĐĂNG KÝ - TRAVELOKA */
           <AuthCard
             onLoginSuccess={handleLoginSuccess}
             onNavigateToExplore={() => setActiveScreen('home')}
@@ -460,11 +420,12 @@ export default function App() {
         )}
 
         {activeScreen === 'hotels' && (
-          /* SCREEN 3: DANH SÁCH PHÒNG - VOYAGE ELITE */
+          /* SCREEN 3: DANH SÁCH KHÁCH SẠN TRAVELOKA CÓ BỘ LỌC */
           <HotelList
             onSelectHotel={handleSelectHotel}
             onAddNewRoom={() => setActiveScreen('add-room')}
             onOpenAuth={() => setActiveScreen('auth')}
+            onBackHome={() => setActiveScreen('home')}
           />
         )}
 
@@ -472,7 +433,7 @@ export default function App() {
           /* SCREEN 4: BOOKING SUMMARY (XÁC NHẬN ĐẶT PHÒNG) */
           <BookingSummary
             selectedHotel={selectedHotel}
-            onBack={() => setActiveScreen('cart')}
+            onBack={() => setActiveScreen('hotels')}
             onProceedToCheckout={() => setActiveScreen('checkout')}
             onBookingSuccess={() => {
               setAlertMessage('Đã xác nhận đặt phòng thành công! Bạn có thể tiến hành thanh toán.');
@@ -482,9 +443,9 @@ export default function App() {
         )}
 
         {activeScreen === 'checkout' && (
-          /* SCREEN 5: THANH TOÁN - SECURE CHECKOUT */
+          /* SCREEN 5: THANH TOÁN - SECURE CHECKOUT TRAVELOKA */
           <SecureCheckout
-            onBack={() => setActiveScreen('cart')}
+            onBack={() => setActiveScreen('booking')}
             onPaymentSuccess={() => {
               setAlertMessage('Thanh toán hoàn tất! Đơn đặt phòng đã được xác nhận.');
               setTimeout(() => setAlertMessage(null), 4000);
@@ -502,7 +463,7 @@ export default function App() {
 
         {activeScreen === 'add-room' && (
           /* SCREEN 7: THÊM PHÒNG MỚI - ADD ROOM FORM */
-          <div className="bg-white rounded-4 shadow-sm border overflow-hidden position-relative">
+          <div className="bg-white rounded-4 shadow-sm border overflow-hidden position-relative mx-auto" style={{ maxWidth: '680px' }}>
             {/* 1. Header with back & help */}
             <Header
               onBack={() => {
@@ -549,7 +510,8 @@ export default function App() {
                 <button
                   type="submit"
                   id="btn-save-room"
-                  className="btn btn-primary-action w-100 shadow-sm d-flex align-items-center justify-content-center gap-2"
+                  className="btn btn-warning w-100 fw-bold py-2.5 text-white rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2"
+                  style={{ backgroundColor: '#ff5e1f', borderColor: '#ff5e1f' }}
                 >
                   <i className="bi bi-floppy"></i>
                   Lưu & Tiếp tục

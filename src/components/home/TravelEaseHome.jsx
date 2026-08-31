@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getCitys, getVouchers } from '../utils/ApiFunctions';
 
 const CATEGORIES = [
   { id: 'hotel', label: 'Khách sạn', icon: 'bi-building', badge: 'Hot' },
@@ -9,90 +10,6 @@ const CATEGORIES = [
   { id: 'xperience', label: 'Xperience & Tour', icon: 'bi-ticket-perforated', badge: 'Mới' },
   { id: 'car', label: 'Thuê xe', icon: 'bi-key', badge: null },
   { id: 'combo', label: 'Combo Tiết Kiệm', icon: 'bi-box2-heart', badge: '-30%' },
-];
-
-const POPULAR_DESTINATIONS = [
-  {
-    id: 'danang',
-    name: 'Đà Nẵng',
-    province: 'Việt Nam',
-    image: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=600&q=80',
-    hotelsCount: '1,450+ chỗ nghỉ',
-    priceFrom: '450.000',
-    tag: 'Bãi biển đẹp',
-  },
-  {
-    id: 'phuquoc',
-    name: 'Phú Quốc',
-    province: 'Kiên Giang',
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80',
-    hotelsCount: '980+ chỗ nghỉ',
-    priceFrom: '620.000',
-    tag: 'Thiên đường nghỉ dưỡng',
-  },
-  {
-    id: 'dalat',
-    name: 'Đà Lạt',
-    province: 'Lâm Đồng',
-    image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
-    hotelsCount: '1,200+ chỗ nghỉ',
-    priceFrom: '350.000',
-    tag: 'Thành phố ngàn hoa',
-  },
-  {
-    id: 'nhatrang',
-    name: 'Nha Trang',
-    province: 'Khánh Hòa',
-    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80',
-    hotelsCount: '890+ chỗ nghỉ',
-    priceFrom: '400.000',
-    tag: 'Vịnh biển kỳ quan',
-  },
-  {
-    id: 'hanoi',
-    name: 'Hà Nội',
-    province: 'Thủ đô Việt Nam',
-    image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=600&q=80',
-    hotelsCount: '1,820+ chỗ nghỉ',
-    priceFrom: '380.000',
-    tag: 'Văn hóa & Ẩm thực',
-  },
-  {
-    id: 'hcm',
-    name: 'TP. Hồ Chí Minh',
-    province: 'Việt Nam',
-    image: 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=600&q=80',
-    hotelsCount: '2,150+ chỗ nghỉ',
-    priceFrom: '390.000',
-    tag: 'Sôi động & Hiện đại',
-  },
-];
-
-const VOUCHERS = [
-  {
-    id: 'TVLK300',
-    code: 'TRAVELOKA300',
-    title: 'Giảm ngay 300.000đ',
-    desc: 'Cho đơn khách sạn từ 2.000.000đ',
-    badge: 'Khách sạn 4-5 sao',
-    color: '#0194f3',
-  },
-  {
-    id: 'EPIC50',
-    code: 'EPICSTAY',
-    title: 'Ưu đãi hè - Giảm 20%',
-    desc: 'Tối đa 500k khi thanh toán qua VietQR',
-    badge: 'Ưu đãi độc quyền',
-    color: '#ff5e1f',
-  },
-  {
-    id: 'MEMBER10',
-    code: 'TRAVELCLUB',
-    title: 'Thành viên mới - Giảm 15%',
-    desc: 'Áp dụng cho lần đặt phòng đầu tiên',
-    badge: 'Thành viên mới',
-    color: '#00b14f',
-  },
 ];
 
 const RECOMMENDED_HOTELS = [
@@ -112,6 +29,7 @@ const RECOMMENDED_HOTELS = [
     amenities: ['wifi', 'pool', 'restaurant', 'beach', 'spa'],
     features: ['Miễn phí hủy phòng', 'Bao gồm bữa sáng ngon miệng', 'Thanh toán tại KS'],
   },
+
   {
     id: 'peridot',
     name: 'Peridot Grand Luxury Boutique Hotel',
@@ -161,6 +79,7 @@ const RECOMMENDED_HOTELS = [
     features: ['View rừng thông thơ mộng', 'Miễn phí hủy', 'Xe đưa đón trung tâm'],
   },
 ];
+
 
 export const TravelEaseHome = ({
   onSelectHotel,
@@ -223,6 +142,63 @@ export const TravelEaseHome = ({
     d.setDate(d.getDate() + Number(nights));
     return d.toISOString().split('T')[0];
   };
+
+  //khai báo các statd loading, error chung cho việc lấy dữ liệu
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  //lấy danh sách các thành phố từ API
+  const [citys, setCitys] = useState([]); 
+  
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchCitys = async () => {
+      try {
+        setLoading(true);
+        console.log('Start Api Data');
+        const data = await getCitys(); 
+        console.log('Citys Data:', data);
+        if (isMounted) {
+          setCitys(data);
+        }
+      } catch (err) {
+        if (isMounted) setError(err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchCitys();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []); 
+
+//lây danh sách các vouchers từ API
+  const [vouchers, setVouchers] = useState([]);
+  useEffect(() => {
+    let isMounted = true;
+    const fetchVouchers = async () => {
+      try {
+        setLoading(true);
+        const data = await getVouchers();
+        console.log('Vouchers Data:', data);
+        if (isMounted) {
+          setVouchers(data);
+        }
+      } catch (err) {
+        if (isMounted) setError(err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+    fetchVouchers();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <div className="bg-white rounded-4 shadow-sm border overflow-hidden position-relative">
@@ -399,7 +375,7 @@ export const TravelEaseHome = ({
               className="badge text-uppercase fw-bold mb-2 shadow-sm"
               style={{ backgroundColor: '#ff5e1f', fontSize: '11px', letterSpacing: '0.5px' }}
             >
-              🎉 Siêu Khuyến Mãi Hè 2026
+              🎉 Siêu Khuyến Mãi Hè {new Date().getFullYear()}
             </span>
             <h2 className="h4 h2-md fw-bold mb-1" style={{ letterSpacing: '-0.3px' }}>
               Từ Đông Nam Á Đến Thế Giới, Chạm Nhẹ Là Đi!
@@ -689,19 +665,21 @@ export const TravelEaseHome = ({
           <span className="badge bg-danger text-white rounded-pill px-2.5 py-1 small">Mới cập nhật</span>
         </div>
 
+        {loading && <p className="text-secondary small">Đang tải dữ liệu điểm đến...</p>}
+        {error && <p className="text-danger small">Lỗi khi tải dữ liệu điểm đến: {error.message}</p>}
         <div className="row g-2 g-md-3">
-          {VOUCHERS.map((v) => (
-            <div key={v.id} className="col-12 col-md-4">
+          {!loading && !error &&vouchers.length > 0 && vouchers.map((v) => (
+            <div key={v.voucherId} className="col-12 col-md-4">
               <div className="card rounded-3 border bg-white p-3 shadow-sm h-100 d-flex flex-column justify-content-between position-relative overflow-hidden">
                 <div
                   className="position-absolute top-0 end-0 px-2 py-0.5 text-white fw-bold"
-                  style={{ backgroundColor: v.color, fontSize: '10px', borderRadius: '0 0 0 8px' }}
+                  style={{ backgroundColor: '#0194f3', fontSize: '10px', borderRadius: '0 0 0 8px' }}
                 >
-                  {v.badge}
+                  {v.label}
                 </div>
                 <div>
-                  <h4 className="fw-bold text-dark mb-1" style={{ fontSize: '14.5px' }}>{v.title}</h4>
-                  <p className="text-secondary small mb-2" style={{ fontSize: '11.5px' }}>{v.desc}</p>
+                  <h4 className="fw-bold text-dark mb-1" style={{ fontSize: '14.5px' }}>{v.description}</h4>
+                  <p className="text-secondary small mb-2" style={{ fontSize: '11.5px' }}> {v.discountAmount ? `${formatVND(v.discountAmount)} OFF` : ''}</p>
                 </div>
                 <div className="d-flex align-items-center justify-content-between pt-2 border-top">
                   <div className="font-monospace fw-bold text-primary small bg-light px-2 py-1 rounded border">
@@ -710,7 +688,7 @@ export const TravelEaseHome = ({
                   <button
                     type="button"
                     className="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 fw-bold"
-                    style={{ borderColor: v.color, color: v.color }}
+                    style={{ borderColor: '#0194f3', color: '#0194f3' }}
                     onClick={() => handleCopyCoupon(v.code)}
                   >
                     {copiedCoupon === v.code ? (
@@ -746,9 +724,13 @@ export const TravelEaseHome = ({
           </button>
         </div>
 
-        <div className="row g-2 g-md-3">
-          {POPULAR_DESTINATIONS.map((dest) => (
-            <div key={dest.id} className="col-6 col-md-4 col-lg-2">
+        {loading && <p className="text-secondary small">Đang tải dữ liệu điểm đến...</p>}
+        {error && <p className="text-danger small">Lỗi khi tải dữ liệu điểm đến: {error.message}</p>}
+
+        {!loading && !error && 
+        (<div className="row g-2 g-md-3">
+          {citys.length > 0 && citys.map((dest) => (
+            <div key={dest.cityId} className="col-6 col-md-4 col-lg-2">
               <div
                 className="card rounded-3 border-0 shadow-sm overflow-hidden h-100 cursor-pointer tv-card-hover position-relative"
                 onClick={() => {
@@ -760,22 +742,23 @@ export const TravelEaseHome = ({
               >
                 <div style={{ height: '120px' }}>
                   <img
-                    src={dest.image}
+                    src={dest.imageUrl}
                     alt={dest.name}
                     className="w-100 h-100 object-fit-cover"
                   />
                 </div>
                 <div className="p-2 bg-white">
                   <h4 className="fw-bold mb-0 text-truncate" style={{ fontSize: '13px' }}>{dest.name}</h4>
-                  <div className="text-secondary small" style={{ fontSize: '10.5px' }}>{dest.hotelsCount}</div>
+                  <div className="text-secondary small" style={{ fontSize: '10.5px' }}>{dest.hotelsCount}+ Chỗ nghỉ</div>
                   <div className="text-danger fw-bold mt-1" style={{ fontSize: '11.5px', color: '#ff5e1f' }}>
-                    Từ {dest.priceFrom}đ
+                    {dest.minPrice ? `Từ ${formatVND(dest.minPrice)}` : '500.000 ₫'}
                   </div>
                 </div>
               </div>
             </div>
           ))}
         </div>
+        )}
       </section>
 
       {/* ======================================================== */}
@@ -888,28 +871,42 @@ export const TravelEaseHome = ({
                 </div>
 
                 {/* Price & Action */}
-                <div className="p-3 pt-0 border-top mt-2">
-                  <div className="d-flex justify-content-between align-items-end pt-2">
+                 <div className="p-3 pt-2.5 border-top bg-light-subtle mt-auto">
+                  <div className="d-flex flex-column gap-2">
+                    {/* Price Breakdown */}
                     <div>
-                      <span className="text-decoration-line-through text-secondary small d-block" style={{ fontSize: '11px' }}>
-                        {formatVND(hotel.originalPrice)}
-                      </span>
-                      <div className="d-flex align-items-center gap-1">
-                        <span className="badge bg-danger-subtle text-danger fw-bold" style={{ fontSize: '10px' }}>
+                      <div className="d-flex align-items-center gap-1.5 mb-0.5 text-nowrap">
+                        <span className="text-decoration-line-through text-secondary small" style={{ fontSize: '11px' }}>
+                          {formatVND(hotel.originalPrice)}
+                        </span>
+                        <span className="badge bg-danger text-white fw-bold rounded-pill" style={{ fontSize: '9.5px', padding: '2px 6px' }}>
                           -{hotel.discount}
                         </span>
-                        <span className="fw-bold text-danger fs-6" style={{ color: '#ff5e1f' }}>
+                      </div>
+
+                      <div className="d-flex align-items-baseline gap-1 text-nowrap">
+                        <span className="fw-bold fs-5 text-nowrap" style={{ color: '#ff5e1f', letterSpacing: '-0.3px' }}>
                           {formatVND(hotel.price)}
                         </span>
+                        <span className="text-secondary small" style={{ fontSize: '11px' }}>/ đêm</span>
                       </div>
-                      <span className="text-secondary" style={{ fontSize: '10px' }}>/ đêm (chưa gồm thuế)</span>
+
+                      <div className="d-flex align-items-baselineext-muted small" style={{ fontSize: '10.5px' }}>
+                        Chưa bao gồm thuế & phí
+                      </div>
                     </div>
+                    {/* Booking Action Button */}
                     <button
                       type="button"
-                      className="btn btn-warning btn-sm fw-bold px-3 py-1.5 rounded-pill text-white shadow-sm"
-                      style={{ backgroundColor: '#ff5e1f', borderColor: '#ff5e1f' }}
+                      className="btn btn-warning w-100 fw-bold py-2 rounded-3 text-white shadow-sm d-flex align-items-center justify-content-center gap-1.5 text-nowrap"
+                      style={{ backgroundColor: '#ff5e1f', borderColor: '#ff5e1f', fontSize: '13px' }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelectHotel && onSelectHotel(hotel);
+                      }}
                     >
-                      Đặt phòng
+                      <span>Đặt phòng</span>
+                      <i className="bi bi-arrow-right"></i>
                     </button>
                   </div>
                 </div>
@@ -1032,7 +1029,7 @@ export const TravelEaseHome = ({
               <span className="badge bg-light text-dark fw-bold px-2 py-1">Napas</span>
             </div>
             <span className="d-block small text-white-50" style={{ fontSize: '11px' }}>
-              © 2026 Traveloka - Azure Horizon Booking Suite. All rights reserved.
+              © {new Date().getFullYear()} Traveloka - Azure Horizon Booking Suite. All rights reserved.
             </span>
           </div>
         </div>

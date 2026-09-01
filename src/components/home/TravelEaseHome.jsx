@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { getCitys, getVouchers } from '../utils/ApiFunctions';
+import React, { useState, useEffect, useSearchParams } from 'react';
+import { getCitys, getVouchers, searchRooms } from '../utils/ApiFunctions';
+import { useNavigate } from 'react-router-dom';
+import { set } from 'date-fns';
 
 const CATEGORIES = [
   { id: 'hotel', label: 'Khách sạn', icon: 'bi-building', badge: 'Hot' },
@@ -92,9 +94,9 @@ export const TravelEaseHome = ({
   onNavigateToDashboard,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState('hotel');
-  const [destination, setDestination] = useState('Đà Nẵng');
+  const [city, setCity] = useState("Đà Nẵng");
   const [checkInDate, setCheckInDate] = useState('2026-08-25');
-  const [nights, setNights] = useState(2);
+  const [totalNights, setTotalNights] = useState(1);
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
   const [rooms, setRooms] = useState(1);
@@ -123,33 +125,19 @@ export const TravelEaseHome = ({
     setTimeout(() => setCopiedCoupon(null), 2500);
   };
 
-  const handleSearchSubmit = (e) => {
-    e?.preventDefault();
-    if (onSearch) {
-      onSearch({
-        destination,
-        dates: `${checkInDate} (${nights} đêm)`,
-        guests: `${adults} Người lớn, ${children > 0 ? children + ' Trẻ em, ' : ''}${rooms} Phòng`,
-        category: selectedCategory,
-        freeCancelOnly,
-        payAtHotelOnly,
-      });
-    }
-  };
-
   const calculateCheckOutDate = () => {
     const d = new Date(checkInDate || '2026-08-25');
-    d.setDate(d.getDate() + Number(nights));
+    d.setDate(d.getDate() + Number(totalNights));
     return d.toISOString().split('T')[0];
   };
-
+  
   //khai báo các statd loading, error chung cho việc lấy dữ liệu
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   //lấy danh sách các thành phố từ API
-  const [citys, setCitys] = useState([]); 
-  
+  const [citys, setCitys] = useState([]);
+
   useEffect(() => {
     let isMounted = true;
 
@@ -157,7 +145,7 @@ export const TravelEaseHome = ({
       try {
         setLoading(true);
         console.log('Start Api Data');
-        const data = await getCitys(); 
+        const data = await getCitys();
         console.log('Citys Data:', data);
         if (isMounted) {
           setCitys(data);
@@ -174,9 +162,9 @@ export const TravelEaseHome = ({
     return () => {
       isMounted = false;
     };
-  }, []); 
+  }, []);
 
-//lây danh sách các vouchers từ API
+  //lây danh sách các vouchers từ API
   const [vouchers, setVouchers] = useState([]);
   useEffect(() => {
     let isMounted = true;
@@ -199,6 +187,63 @@ export const TravelEaseHome = ({
       isMounted = false;
     };
   }, []);
+
+  //lấy danh sách các phòng theo thành phố và ngày check-in, check-out, số lượng khách đặt
+  const handleSearchSubmit = (e) => {
+    e?.preventDefault();
+    const params = new URLSearchParams({
+      city: city,
+      checkInDate: checkInDate,
+      totalNights: totalNights,
+      adults: adults,
+      children: children,
+      rooms: rooms,
+    });
+    console.log('Search Params:', params.toString());
+    if (onSearch) {
+      onSearch({
+        city,
+        dates: `${checkInDate} (${totalNights} đêm)`,
+        guests: `${adults} Người lớn, ${children > 0 ? children + ' Trẻ em, ' : ''}${rooms} Phòng`,
+        category: selectedCategory,
+        freeCancelOnly,
+        payAtHotelOnly,
+      });
+    }
+  };
+
+  const [searchRoomResults, setSearchRoomResults] = useState([]);
+  useEffect(() => {
+    const isInvaild =
+      !city ||
+      !checkInDate ||
+      totalNights == null || totalNights <= 0 ||
+      adults == null || adults <= 0 ||
+      children == null || children < 0
+      rooms == null || rooms <= 0;
+    if (isInvaild) {
+      return;
+    }
+    let isMounted = true;
+    const fetchSearchRooms = async () => {
+      try {
+        setLoading(true);
+        const data = await searchRooms(city, checkInDate, totalNights, adults, children, rooms);
+        console.log('Search Rooms Data:', data);
+        if (isMounted) {
+          setSearchRoomResults(data);
+        }
+      } catch (err) {
+        if (isMounted) setError(err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+    fetchSearchRooms();
+    return () => {
+      isMounted = false;
+    };
+  }, [city, checkInDate, totalNights, adults, children, rooms]);
 
   return (
     <div className="bg-white rounded-4 shadow-sm border overflow-hidden position-relative">
@@ -329,11 +374,10 @@ export const TravelEaseHome = ({
                 <button
                   key={cat.id}
                   type="button"
-                  className={`btn btn-sm rounded-pill px-3 py-1.5 d-flex align-items-center gap-1.5 border transition-all text-nowrap ${
-                    isSelected
-                      ? 'btn-primary text-white fw-bold shadow-sm'
-                      : 'btn-light text-secondary border-0'
-                  }`}
+                  className={`btn btn-sm rounded-pill px-3 py-1.5 d-flex align-items-center gap-1.5 border transition-all text-nowrap ${isSelected
+                    ? 'btn-primary text-white fw-bold shadow-sm'
+                    : 'btn-light text-secondary border-0'
+                    }`}
                   style={
                     isSelected
                       ? { backgroundColor: '#0194f3', borderColor: '#0194f3' }
@@ -345,9 +389,8 @@ export const TravelEaseHome = ({
                   <span>{cat.label}</span>
                   {cat.badge && (
                     <span
-                      className={`badge rounded-pill ms-1 ${
-                        isSelected ? 'bg-warning text-dark' : 'bg-danger text-white'
-                      }`}
+                      className={`badge rounded-pill ms-1 ${isSelected ? 'bg-warning text-dark' : 'bg-danger text-white'
+                        }`}
                       style={{ fontSize: '9px', padding: '2px 5px' }}
                     >
                       {cat.badge}
@@ -396,7 +439,7 @@ export const TravelEaseHome = ({
         </div>
 
         {/* Traveloka Unified Search Box Card */}
-        <div className="card rounded-4 border-0 shadow-lg text-dark overflow-hidden p-3 p-md-4 bg-white">
+        <div className="card rounded-4 border-0 shadow-lg text-darkp-3 p-md-4 bg-white">
           <form onSubmit={handleSearchSubmit}>
             <div className="row g-2 g-md-3">
               {/* Field 1: Destination / Hotel Name */}
@@ -416,38 +459,40 @@ export const TravelEaseHome = ({
                     type="text"
                     className="form-control bg-transparent border-0 p-0 fw-bold shadow-none"
                     placeholder="Bạn muốn nghỉ dưỡng ở đâu?"
-                    value={destination}
-                    onChange={(e) => setDestination(e.target.value)}
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
                   />
                   <i className="bi bi-chevron-down text-secondary small"></i>
                 </div>
 
                 {/* Popular Cities Dropdown */}
-                {showCityPicker && (
-                  <div
-                    className="position-absolute top-100 start-0 w-100 bg-white rounded-3 shadow-lg border p-2 mt-1 z-3"
-                    style={{ zIndex: 1050 }}
-                  >
-                    <div className="small fw-bold text-secondary px-2 py-1">Điểm đến phổ biến</div>
-                    <div className="row g-1">
-                      {['Đà Nẵng', 'Phú Quốc', 'Nha Trang', 'Đà Lạt', 'Hà Nội', 'TP. Hồ Chí Minh', 'Vũng Tàu', 'Sapa', 'Hội An'].map((city) => (
-                        <div key={city} className="col-6">
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-light w-100 text-start d-flex align-items-center gap-1 py-1.5"
-                            onClick={() => {
-                              setDestination(city);
-                              setShowCityPicker(false);
-                            }}
-                          >
-                            <i className="bi bi-geo-alt text-primary small"></i>
-                            <span className="small">{city}</span>
-                          </button>
-                        </div>
-                      ))}
+                <div className="position-relative">
+                  {showCityPicker && (
+                    <div
+                      className="position-absolute top-100 start-0 w-100 bg-white rounded-3 shadow-lg border p-2 mt-1 z-3"
+                      style={{ zIndex: 1050 }}
+                    >
+                      <div className="small fw-bold text-secondary px-2 py-1">Điểm đến phổ biến</div>
+                      <div className="row g-1">
+                        {citys.length > 0 && citys.map((c) => (
+                          <div key={c.cityId} className="col-6">
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-light w-100 text-start d-flex align-items-center gap-1 py-1"
+                              onClick={() => {
+                                setCity(c.name);
+                                setShowCityPicker(false);
+                              }}
+                            >
+                              <i className="bi bi-geo-alt text-primary small"></i>
+                              <span className="small">{c.name}</span>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               {/* Field 2: Check-in Date & Nights */}
@@ -470,8 +515,8 @@ export const TravelEaseHome = ({
                     <select
                       className="form-select form-select-sm bg-white border small fw-bold py-0.5 px-2"
                       style={{ width: '85px', fontSize: '11.5px' }}
-                      value={nights}
-                      onChange={(e) => setNights(Number(e.target.value))}
+                      value={totalNights}
+                      onChange={(e) => setTotalNights(Number(e.target.value))}
                     >
                       <option value={1}>1 đêm</option>
                       <option value={2}>2 đêm</option>
@@ -668,7 +713,7 @@ export const TravelEaseHome = ({
         {loading && <p className="text-secondary small">Đang tải dữ liệu điểm đến...</p>}
         {error && <p className="text-danger small">Lỗi khi tải dữ liệu điểm đến: {error.message}</p>}
         <div className="row g-2 g-md-3">
-          {!loading && !error &&vouchers.length > 0 && vouchers.map((v) => (
+          {!loading && !error && vouchers.length > 0 && vouchers.map((v) => (
             <div key={v.voucherId} className="col-12 col-md-4">
               <div className="card rounded-3 border bg-white p-3 shadow-sm h-100 d-flex flex-column justify-content-between position-relative overflow-hidden">
                 <div
@@ -727,38 +772,38 @@ export const TravelEaseHome = ({
         {loading && <p className="text-secondary small">Đang tải dữ liệu điểm đến...</p>}
         {error && <p className="text-danger small">Lỗi khi tải dữ liệu điểm đến: {error.message}</p>}
 
-        {!loading && !error && 
-        (<div className="row g-2 g-md-3">
-          {citys.length > 0 && citys.map((dest) => (
-            <div key={dest.cityId} className="col-6 col-md-4 col-lg-2">
-              <div
-                className="card rounded-3 border-0 shadow-sm overflow-hidden h-100 cursor-pointer tv-card-hover position-relative"
-                onClick={() => {
-                  setDestination(dest.name);
-                  if (onSearch) {
-                    onSearch({ destination: dest.name, dates: `${checkInDate} (${nights} đêm)`, guests: `${adults} khách`, category: 'hotel' });
-                  }
-                }}
-              >
-                <div style={{ height: '120px' }}>
-                  <img
-                    src={dest.imageUrl}
-                    alt={dest.name}
-                    className="w-100 h-100 object-fit-cover"
-                  />
-                </div>
-                <div className="p-2 bg-white">
-                  <h4 className="fw-bold mb-0 text-truncate" style={{ fontSize: '13px' }}>{dest.name}</h4>
-                  <div className="text-secondary small" style={{ fontSize: '10.5px' }}>{dest.hotelsCount}+ Chỗ nghỉ</div>
-                  <div className="text-danger fw-bold mt-1" style={{ fontSize: '11.5px', color: '#ff5e1f' }}>
-                    {dest.minPrice ? `Từ ${formatVND(dest.minPrice)}` : '500.000 ₫'}
+        {!loading && !error &&
+          (<div className="row g-2 g-md-3">
+            {citys.length > 0 && citys.map((dest) => (
+              <div key={dest.cityId} className="col-6 col-md-4 col-lg-2">
+                <div
+                  className="card rounded-3 border-0 shadow-sm overflow-hidden h-100 cursor-pointer tv-card-hover position-relative"
+                  onClick={() => {
+                    setCity(dest.name);
+                    if (onSearch) {
+                      onSearch({ destination: dest.name, dates: `${checkInDate} (${totalNights} đêm)`, guests: `${adults} khách`, category: 'hotel' });
+                    }
+                  }}
+                >
+                  <div style={{ height: '120px' }}>
+                    <img
+                      src={dest.imageUrl}
+                      alt={dest.name}
+                      className="w-100 h-100 object-fit-cover"
+                    />
+                  </div>
+                  <div className="p-2 bg-white">
+                    <h4 className="fw-bold mb-0 text-truncate" style={{ fontSize: '13px' }}>{dest.name}</h4>
+                    <div className="text-secondary small" style={{ fontSize: '10.5px' }}>{dest.hotelsCount}+ Chỗ nghỉ</div>
+                    <div className="text-danger fw-bold mt-1" style={{ fontSize: '11.5px', color: '#ff5e1f' }}>
+                      {dest.minPrice ? `Từ ${formatVND(dest.minPrice)}` : '500.000 ₫'}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-        )}
+            ))}
+          </div>
+          )}
       </section>
 
       {/* ======================================================== */}
@@ -812,11 +857,10 @@ export const TravelEaseHome = ({
                       onClick={(e) => toggleFavorite(e, hotel.id)}
                     >
                       <i
-                        className={`bi ${
-                          favorites.includes(hotel.id)
-                            ? 'bi-heart-fill text-danger'
-                            : 'bi-heart text-secondary'
-                        }`}
+                        className={`bi ${favorites.includes(hotel.id)
+                          ? 'bi-heart-fill text-danger'
+                          : 'bi-heart text-secondary'
+                          }`}
                       ></i>
                     </button>
                     <span
@@ -871,7 +915,7 @@ export const TravelEaseHome = ({
                 </div>
 
                 {/* Price & Action */}
-                 <div className="p-3 pt-2.5 border-top bg-light-subtle mt-auto">
+                <div className="p-3 pt-2.5 border-top bg-light-subtle mt-auto">
                   <div className="d-flex flex-column gap-2">
                     {/* Price Breakdown */}
                     <div>
@@ -1051,9 +1095,8 @@ export const TravelEaseHome = ({
 
         <button
           type="button"
-          className={`btn btn-link p-0 text-decoration-none d-flex flex-column align-items-center ${
-            activeBottomTab === 'bookings' ? 'text-primary fw-bold' : 'text-secondary'
-          }`}
+          className={`btn btn-link p-0 text-decoration-none d-flex flex-column align-items-center ${activeBottomTab === 'bookings' ? 'text-primary fw-bold' : 'text-secondary'
+            }`}
           onClick={() => {
             setActiveBottomTab('bookings');
             if (onNavigateToBookings) onNavigateToBookings();
@@ -1065,9 +1108,8 @@ export const TravelEaseHome = ({
 
         <button
           type="button"
-          className={`btn btn-link p-0 text-decoration-none d-flex flex-column align-items-center position-relative ${
-            activeBottomTab === 'cart' ? 'text-primary fw-bold' : 'text-secondary'
-          }`}
+          className={`btn btn-link p-0 text-decoration-none d-flex flex-column align-items-center position-relative ${activeBottomTab === 'cart' ? 'text-primary fw-bold' : 'text-secondary'
+            }`}
           onClick={() => {
             setActiveBottomTab('cart');
             if (onNavigateToCart) onNavigateToCart();
@@ -1082,9 +1124,8 @@ export const TravelEaseHome = ({
 
         <button
           type="button"
-          className={`btn btn-link p-0 text-decoration-none d-flex flex-column align-items-center ${
-            activeBottomTab === 'chat' ? 'text-primary fw-bold' : 'text-secondary'
-          }`}
+          className={`btn btn-link p-0 text-decoration-none d-flex flex-column align-items-center ${activeBottomTab === 'chat' ? 'text-primary fw-bold' : 'text-secondary'
+            }`}
           onClick={() => {
             setActiveBottomTab('chat');
             if (onNavigateToMessages) onNavigateToMessages();
@@ -1096,9 +1137,8 @@ export const TravelEaseHome = ({
 
         <button
           type="button"
-          className={`btn btn-link p-0 text-decoration-none d-flex flex-column align-items-center ${
-            activeBottomTab === 'profile' ? 'text-primary fw-bold' : 'text-secondary'
-          }`}
+          className={`btn btn-link p-0 text-decoration-none d-flex flex-column align-items-center ${activeBottomTab === 'profile' ? 'text-primary fw-bold' : 'text-secondary'
+            }`}
           onClick={() => {
             setActiveBottomTab('profile');
             if (onNavigateToProfile) onNavigateToProfile();

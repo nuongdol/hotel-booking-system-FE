@@ -61,13 +61,23 @@ export async function getVouchers(){
     }
 }
 /* Tìm kiếm phòng theo thành phố và ngày check-in, check-out, số lượng khách đặt*/  
-export async function searchRooms(city, checkInDate, totalNights, adults,childrend) {
+export async function searchRooms(city, checkInDate, totalNights, adults, childrend, rooms) {
     try {
-        const response = await api.get(`/rooms/research?city=${city}&checkInDate=${checkInDate}&totalNights=${totalNights}&adults=${adults}&childrend=${childrend}`);
-        return response.data;
+        const response = await api.get(`/rooms/research?city=${city}&checkInDate=${checkInDate}&totalNights=${totalNights}&adults=${adults}&childrend=${childrend}&rooms=${rooms}`);
+        return response.data.data;
     } catch (error) {
         console.error("Error searching rooms:", error.message);
         throw new Error("Failed to search rooms");
+    }
+}
+/* Lấy danh sách thành phố*/
+export async function getCities() {
+    try {
+        const response = await api.get("/city");
+        return response.data.data;
+    } catch (error) {
+        console.error("Error fetching cities:", error.message);
+        throw new Error("Failed to fetch cities");
     }
 }
 

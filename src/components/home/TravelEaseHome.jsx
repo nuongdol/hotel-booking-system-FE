@@ -2,6 +2,10 @@ import React, { useState, useEffect, useSearchParams } from 'react';
 import { getCitys, getVouchers, searchRooms } from '../utils/ApiFunctions';
 import { useNavigate } from 'react-router-dom';
 import { set } from 'date-fns';
+import { HeaderHome } from './HeaderHome.jsx';
+import { Coupon } from './CouponHome.jsx';
+import { PopularHotel } from './PopularHotel.jsx'
+
 
 const CATEGORIES = [
   { id: 'hotel', label: 'Khách sạn', icon: 'bi-building', badge: 'Hot' },
@@ -107,6 +111,16 @@ export const TravelEaseHome = ({
   const [copiedCoupon, setCopiedCoupon] = useState(null);
   const [freeCancelOnly, setFreeCancelOnly] = useState(false);
   const [payAtHotelOnly, setPayAtHotelOnly] = useState(false);
+  const [activeScreen, setActiveScreen] = useState('home'); // 'home', 'searchResults', 'hotelDetails', 'cart', 'checkout'
+  const [currentUser, setCurrentUser] = useState(null);
+  const [selectedHotel, setSelectHotel] = useState(null);
+  const [selectedChat, setSelectedChat] = useState(null);
+  const [roomData, setRoomData] = useState(null);
+  const [currentStep, setCurrentStep] = useState(1); // 1: Cart, 2: Checkout, 3: Payment
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
+  const [alertMessage, setAlertMessage] = useState(null);
+
 
   const toggleFavorite = (e, id) => {
     e.stopPropagation();
@@ -130,7 +144,8 @@ export const TravelEaseHome = ({
     d.setDate(d.getDate() + Number(totalNights));
     return d.toISOString().split('T')[0];
   };
-  
+  const navigate = useNavigate();
+
   //khai báo các statd loading, error chung cho việc lấy dữ liệu
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -220,7 +235,7 @@ export const TravelEaseHome = ({
       totalNights == null || totalNights <= 0 ||
       adults == null || adults <= 0 ||
       children == null || children < 0
-      rooms == null || rooms <= 0;
+    rooms == null || rooms <= 0;
     if (isInvaild) {
       return;
     }
@@ -246,162 +261,20 @@ export const TravelEaseHome = ({
   }, [city, checkInDate, totalNights, adults, children, rooms]);
 
   return (
-    <div className="bg-white rounded-4 shadow-sm border overflow-hidden position-relative">
+    <div className="bg-white rounded-4 shadow-sm border overflow-hidden position-relative" >
       {/* ======================================================== */}
       {/* 1. TOP TRAVELOKA DESKTOP HEADER & APP BAR                */}
       {/* ======================================================== */}
-      <header className="bg-white border-bottom sticky-top" style={{ zIndex: 1020 }}>
-        {/* Top utility sub-bar on desktop */}
-        <div className="d-none d-lg-block border-bottom py-1.5 px-4 bg-light text-secondary small" style={{ fontSize: '12px' }}>
-          <div className="d-flex justify-content-between align-items-center">
-            <div className="d-flex align-items-center gap-3">
-              <span className="d-flex align-items-center gap-1">
-                <i className="bi bi-shield-check text-success"></i> Đảm bảo giá tốt nhất & Hoàn tiền dễ dàng
-              </span>
-              <span className="text-muted">|</span>
-              <span className="d-flex align-items-center gap-1">
-                <i className="bi bi-headset text-primary"></i> Hỗ trợ 24/7: <strong>1900-6977</strong>
-              </span>
-            </div>
-            <div className="d-flex align-items-center gap-3">
-              <button
-                type="button"
-                className="btn btn-link p-0 text-decoration-none text-secondary small d-flex align-items-center gap-1"
-                onClick={onNavigateToDashboard}
-              >
-                <i className="bi bi-buildings text-primary"></i> Hợp tác với Traveloka (Dành cho Chủ Khách Sạn)
-              </button>
-              <span className="text-muted">|</span>
-              <span className="cursor-pointer d-flex align-items-center gap-1">
-                🇻🇳 <strong>VND</strong> (Tiếng Việt)
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Branding & Navigation Bar */}
-        <div className="p-3 px-md-4 d-flex align-items-center justify-content-between">
-          {/* Logo */}
-          <div className="d-flex align-items-center gap-3">
-            <div
-              className="d-flex align-items-center gap-2 cursor-pointer"
-              onClick={() => setActiveBottomTab('explore')}
-            >
-              <div
-                className="rounded-3 d-flex align-items-center justify-content-center text-white shadow-sm"
-                style={{
-                  width: '38px',
-                  height: '38px',
-                  backgroundColor: '#0194f3',
-                  background: 'linear-gradient(135deg, #0194f3 0%, #0064d2 100%)',
-                }}
-              >
-                <i className="bi bi-send-fill fs-5" style={{ transform: 'rotate(-25deg)' }}></i>
-              </div>
-              <div>
-                <span className="fw-black fs-4 text-primary tracking-tight mb-0" style={{ color: '#0194f3', fontWeight: '800', letterSpacing: '-0.5px' }}>
-                  traveloka
-                </span>
-                <span className="d-none d-sm-inline ms-1 badge bg-warning text-dark fw-bold" style={{ fontSize: '10px' }}>
-                  AZURE
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Desktop Right Quick Actions */}
-          <div className="d-flex align-items-center gap-2 gap-md-3">
-            <button
-              type="button"
-              className="btn btn-light btn-sm d-flex align-items-center gap-1 text-secondary border-0"
-              onClick={onNavigateToMessages}
-              title="Tin nhắn & Trò chuyện"
-            >
-              <i className="bi bi-chat-dots text-primary fs-5"></i>
-              <span className="d-none d-md-inline small fw-semibold">Tin nhắn</span>
-            </button>
-
-            <button
-              type="button"
-              className="btn btn-light btn-sm d-flex align-items-center gap-1 text-secondary border-0 position-relative"
-              onClick={onNavigateToCart}
-              title="Giỏ hàng"
-            >
-              <i className="bi bi-cart3 text-warning fs-5"></i>
-              <span className="d-none d-md-inline small fw-semibold">Giỏ hàng</span>
-              <span className="position-absolute top-1 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: '9px' }}>
-                2
-              </span>
-            </button>
-
-            <button
-              type="button"
-              className="btn btn-light btn-sm d-none d-md-flex align-items-center gap-1 text-secondary border-0"
-              onClick={onNavigateToBookings}
-              title="Đặt chỗ của tôi"
-            >
-              <i className="bi bi-calendar2-check text-success fs-5"></i>
-              <span className="small fw-semibold">Đặt chỗ</span>
-            </button>
-
-            <button
-              type="button"
-              className="btn btn-outline-primary btn-sm px-3 fw-bold rounded-pill d-flex align-items-center gap-1"
-              style={{ borderColor: '#0194f3', color: '#0194f3' }}
-              onClick={onNavigateToAuth}
-            >
-              <i className="bi bi-person-circle"></i>
-              <span>Đăng nhập</span>
-            </button>
-
-            <button
-              type="button"
-              className="btn btn-primary btn-sm px-3 fw-bold rounded-pill d-none d-sm-inline-flex align-items-center"
-              style={{ backgroundColor: '#0194f3', borderColor: '#0194f3' }}
-              onClick={onNavigateToAuth}
-            >
-              Đăng ký
-            </button>
-          </div>
-        </div>
-
-        {/* Secondary Category Ribbon (Desktop & Mobile Scrollable) */}
-        <div className="border-top px-3 px-md-4 py-2 bg-white overflow-auto flex-nowrap" style={{ scrollbarWidth: 'none' }}>
-          <div className="d-flex align-items-center gap-1 gap-md-2" style={{ minWidth: 'max-content' }}>
-            {CATEGORIES.map((cat) => {
-              const isSelected = selectedCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  className={`btn btn-sm rounded-pill px-3 py-1.5 d-flex align-items-center gap-1.5 border transition-all text-nowrap ${isSelected
-                    ? 'btn-primary text-white fw-bold shadow-sm'
-                    : 'btn-light text-secondary border-0'
-                    }`}
-                  style={
-                    isSelected
-                      ? { backgroundColor: '#0194f3', borderColor: '#0194f3' }
-                      : { backgroundColor: '#f4f6f8' }
-                  }
-                  onClick={() => setSelectedCategory(cat.id)}
-                >
-                  <i className={`bi ${cat.icon}`}></i>
-                  <span>{cat.label}</span>
-                  {cat.badge && (
-                    <span
-                      className={`badge rounded-pill ms-1 ${isSelected ? 'bg-warning text-dark' : 'bg-danger text-white'
-                        }`}
-                      style={{ fontSize: '9px', padding: '2px 5px' }}
-                    >
-                      {cat.badge}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </header>
+      <HeaderHome
+        onNavigateToDashboard={onNavigateToDashboard}
+        onNavigateToAuth={onNavigateToAuth}
+        setActiveBottomTab={setActiveBottomTab}
+        onNavigateToMessages={onNavigateToMessages}
+        selectedCategory={selectedCategory}
+        onNavigateToCart={onNavigateToCart}
+        onNavigateToBookings={onNavigateToBookings}
+        CATEGORIES={CATEGORIES}
+      />
 
       {/* ======================================================== */}
       {/* 2. TRAVELOKA HERO BANNER & MULTI-FIELD SEARCH ENGINE     */}
@@ -696,115 +569,28 @@ export const TravelEaseHome = ({
       {/* ======================================================== */}
       {/* 3. TRAVELOKA COUPONS & VOUCHERS SECTION                  */}
       {/* ======================================================== */}
-      <section className="p-3 p-md-4 bg-light border-bottom">
-        <div className="d-flex align-items-center justify-content-between mb-3">
-          <div className="d-flex align-items-center gap-2">
-            <i className="bi bi-ticket-perforated-fill fs-4 text-danger"></i>
-            <div>
-              <h3 className="h6 fw-bold mb-0">Mã Giảm Giá & Khuyến Mãi Độc Quyền</h3>
-              <span className="text-secondary small" style={{ fontSize: '12px' }}>
-                Sao chép mã voucher và áp dụng ngay ở bước thanh toán
-              </span>
-            </div>
-          </div>
-          <span className="badge bg-danger text-white rounded-pill px-2.5 py-1 small">Mới cập nhật</span>
-        </div>
-
-        {loading && <p className="text-secondary small">Đang tải dữ liệu điểm đến...</p>}
-        {error && <p className="text-danger small">Lỗi khi tải dữ liệu điểm đến: {error.message}</p>}
-        <div className="row g-2 g-md-3">
-          {!loading && !error && vouchers.length > 0 && vouchers.map((v) => (
-            <div key={v.voucherId} className="col-12 col-md-4">
-              <div className="card rounded-3 border bg-white p-3 shadow-sm h-100 d-flex flex-column justify-content-between position-relative overflow-hidden">
-                <div
-                  className="position-absolute top-0 end-0 px-2 py-0.5 text-white fw-bold"
-                  style={{ backgroundColor: '#0194f3', fontSize: '10px', borderRadius: '0 0 0 8px' }}
-                >
-                  {v.label}
-                </div>
-                <div>
-                  <h4 className="fw-bold text-dark mb-1" style={{ fontSize: '14.5px' }}>{v.description}</h4>
-                  <p className="text-secondary small mb-2" style={{ fontSize: '11.5px' }}> {v.discountAmount ? `${formatVND(v.discountAmount)} OFF` : ''}</p>
-                </div>
-                <div className="d-flex align-items-center justify-content-between pt-2 border-top">
-                  <div className="font-monospace fw-bold text-primary small bg-light px-2 py-1 rounded border">
-                    {v.code}
-                  </div>
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 fw-bold"
-                    style={{ borderColor: '#0194f3', color: '#0194f3' }}
-                    onClick={() => handleCopyCoupon(v.code)}
-                  >
-                    {copiedCoupon === v.code ? (
-                      <span><i className="bi bi-check2"></i> Đã chép</span>
-                    ) : (
-                      <span>Sao chép</span>
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      <Coupon
+        error={error}
+        loading={loading}
+        vouchers={vouchers}
+        copiedCoupon={copiedCoupon}
+        handleCopyCoupon={handleCopyCoupon}
+      />
 
       {/* ======================================================== */}
       {/* 4. POPULAR DESTINATIONS IN VIETNAM                       */}
       {/* ======================================================== */}
-      <section className="p-3 p-md-4 border-bottom">
-        <div className="d-flex align-items-center justify-content-between mb-3">
-          <div>
-            <h3 className="h6 fw-bold mb-0">Điểm Đến Thịnh Hành Tại Việt Nam</h3>
-            <span className="text-secondary small" style={{ fontSize: '12px' }}>
-              Những điểm đến hấp dẫn được đặt phòng nhiều nhất tuần này
-            </span>
-          </div>
-          <button
-            type="button"
-            className="btn btn-link text-primary p-0 text-decoration-none small fw-bold"
-            onClick={handleSearchSubmit}
-          >
-            Xem tất cả <i className="bi bi-arrow-right"></i>
-          </button>
-        </div>
-
-        {loading && <p className="text-secondary small">Đang tải dữ liệu điểm đến...</p>}
-        {error && <p className="text-danger small">Lỗi khi tải dữ liệu điểm đến: {error.message}</p>}
-
-        {!loading && !error &&
-          (<div className="row g-2 g-md-3">
-            {citys.length > 0 && citys.map((dest) => (
-              <div key={dest.cityId} className="col-6 col-md-4 col-lg-2">
-                <div
-                  className="card rounded-3 border-0 shadow-sm overflow-hidden h-100 cursor-pointer tv-card-hover position-relative"
-                  onClick={() => {
-                    setCity(dest.name);
-                    if (onSearch) {
-                      onSearch({ destination: dest.name, dates: `${checkInDate} (${totalNights} đêm)`, guests: `${adults} khách`, category: 'hotel' });
-                    }
-                  }}
-                >
-                  <div style={{ height: '120px' }}>
-                    <img
-                      src={dest.imageUrl}
-                      alt={dest.name}
-                      className="w-100 h-100 object-fit-cover"
-                    />
-                  </div>
-                  <div className="p-2 bg-white">
-                    <h4 className="fw-bold mb-0 text-truncate" style={{ fontSize: '13px' }}>{dest.name}</h4>
-                    <div className="text-secondary small" style={{ fontSize: '10.5px' }}>{dest.hotelsCount}+ Chỗ nghỉ</div>
-                    <div className="text-danger fw-bold mt-1" style={{ fontSize: '11.5px', color: '#ff5e1f' }}>
-                      {dest.minPrice ? `Từ ${formatVND(dest.minPrice)}` : '500.000 ₫'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          )}
-      </section>
+      <PopularHotel
+        onSearch={onSearch}
+        handleSearchSubmit={handleSearchSubmit}
+        error={error}
+        loading={loading}
+        citys={citys}
+        checkInDate={checkInDate}
+        totalNights={totalNights}
+        adults={adults}
+        formatVND={formatVND}
+      />
 
       {/* ======================================================== */}
       {/* 5. TOP REVIEWED & RECOMMENDED HOTELS                     */}
@@ -1064,13 +850,13 @@ export const TravelEaseHome = ({
 
           <div className="col-12 col-md-4">
             <h5 className="small fw-bold text-white text-uppercase mb-2" style={{ fontSize: '12px' }}>Đối tác thanh toán uy tín</h5>
-            <div className="d-flex flex-wrap gap-2 mb-3">
-              <span className="badge bg-light text-dark fw-bold px-2 py-1">VietQR</span>
-              <span className="badge bg-light text-dark fw-bold px-2 py-1">MoMo</span>
-              <span className="badge bg-light text-dark fw-bold px-2 py-1">ZaloPay</span>
-              <span className="badge bg-light text-dark fw-bold px-2 py-1">VISA</span>
-              <span className="badge bg-light text-dark fw-bold px-2 py-1">Mastercard</span>
-              <span className="badge bg-light text-dark fw-bold px-2 py-1">Napas</span>
+            <div className="d-flex flex-wrap justify-content-center gap-2 mb-3">
+                <span className="badge bg-light text-dark fw-bold px-2 py-1">VietQR</span>
+                <span className="badge bg-light text-dark fw-bold px-2 py-1">MoMo</span>
+                <span className="badge bg-light text-dark fw-bold px-2 py-1">ZaloPay</span>
+                <span className="badge bg-light text-dark fw-bold px-2 py-1">VISA</span>
+                <span className="badge bg-light text-dark fw-bold px-2 py-1">Mastercard</span>
+                <span className="badge bg-light text-dark fw-bold px-2 py-1">Napas</span>
             </div>
             <span className="d-block small text-white-50" style={{ fontSize: '11px' }}>
               © {new Date().getFullYear()} Traveloka - Azure Horizon Booking Suite. All rights reserved.
@@ -1149,5 +935,6 @@ export const TravelEaseHome = ({
         </button>
       </nav>
     </div>
+
   );
 };

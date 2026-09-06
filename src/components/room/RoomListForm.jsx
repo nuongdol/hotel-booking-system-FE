@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import { Header } from './roomList/Header.jsx';
-import { StepProgress } from './roomList/StepProgress.jsx';
-import { BasicInfoCard } from '../room/cartRoom/BasicInfoCard.jsx';
-import { AmenitiesCard } from './roomList/AmenitiesCard.jsx';
-import { ImagesCard } from './roomList/ImagesCard.jsx';
-import { SuccessModal } from './roomList/SuccessModal.jsx';
-import { HelpModal } from './roomList/HelpModal.jsx';
-import { CodeModal } from './roomList/CodeModal.jsx';
-import { BookingSummary } from '../bookings/BookingSummary.jsx';
-import { HotelList } from '../hotel/HotelList.jsx';
+import { useState } from 'react';
 import { AuthCard } from '../auth/AuthCard.jsx';
 import { ResetPasswordCard } from '../auth/ResetPasswordCard.jsx';
+import { BookingSummary } from '../bookings/BookingSummary.jsx';
 import { AddPropertyCard } from '../common/AddPropertyCard.jsx';
-import { SecureCheckout } from '../payment/SecureCheckout.jsx';
-import { TravelEaseHome } from '../home/TravelEaseHome.jsx';
 import { OwnerDashboard } from '../home/OwnerDashboard.jsx';
+import { TravelEaseHome } from '../home/TravelEaseHome.jsx';
+import { HotelList } from '../hotel/HotelList.jsx';
 import { ManageHotels } from '../hotel/ManageHotels.jsx';
+import { SecureCheckout } from '../payment/SecureCheckout.jsx';
+import { BasicInfoCard } from '../room/cartRoom/BasicInfoCard.jsx';
+import { AmenitiesCard } from './roomList/AmenitiesCard.jsx';
 import { CartScreen } from './roomList/CartScreen.jsx';
-import { MessagesList } from './roomList/MessagesList.jsx';
 import { ChatDetail } from './roomList/ChatDetail.jsx';
+import { CodeModal } from './roomList/CodeModal.jsx';
+import { Header } from './roomList/Header.jsx';
+import { HelpModal } from './roomList/HelpModal.jsx';
+import { ImagesCard } from './roomList/ImagesCard.jsx';
+import { MessagesList } from './roomList/MessagesList.jsx';
+import { StepProgress } from './roomList/StepProgress.jsx';
+import { SuccessModal } from './roomList/SuccessModal.jsx';
 
 const INITIAL_ROOM_STATE = {
   name: '',
@@ -30,8 +30,8 @@ const INITIAL_ROOM_STATE = {
 };
 
 export default function App() {
-  const [activeScreen, setActiveScreen] = useState('home'); 
-  // 'home' | 'messages' | 'chat-detail' | 'dashboard' | 'manage-hotels' | 'cart' | 'hotels' | 'booking' | 'checkout' | 'auth' | 'reset-password' | 'add-property' | 'add-room'
+  const [activeScreen, setActiveScreen] = useState('home');
+  'home' | 'messages' | 'chat-detail' | 'dashboard' | 'manage-hotels' | 'cart' | 'hotels' | 'booking' | 'checkout' | 'auth' | 'reset-password' | 'add-property' | 'add-room'
   const [currentUser, setCurrentUser] = useState(null);
   const [selectedHotel, setSelectedHotel] = useState(null);
   const [selectedChat, setSelectedChat] = useState(null);
@@ -40,7 +40,7 @@ export default function App() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showCodeModal, setShowCodeModal] = useState(false);
-  const [viewMode, setViewMode] = useState('desktop'); // 'desktop' | 'mobile'
+  const [viewMode, setViewMode] = useState('desktop');
   const [alertMessage, setAlertMessage] = useState(null);
 
   // Field change handler
@@ -145,7 +145,7 @@ export default function App() {
   return (
     <div className="min-vh-100 py-2 py-md-3" style={{ backgroundColor: '#f0f2f5' }}>
       {/* Top Traveloka Quick Switcher & Toolbar */}
-      <div className="container mb-3" style={{ maxWidth: viewMode === 'mobile' ? '460px' : '1240px' }}>
+      <div className="container-fluid mb-3 px-3 px-lg-5" style={{ maxWidth: '100%' }}>
         <div className="bg-white p-2.5 rounded-4 shadow-sm border d-flex flex-column flex-xl-row align-items-center justify-content-between gap-2.5">
           {/* Logo & Navigation Tabs */}
           <div className="d-flex align-items-center gap-2 w-100 w-xl-auto overflow-auto flex-nowrap pb-1 pb-xl-0">
@@ -162,11 +162,10 @@ export default function App() {
               <button
                 type="button"
                 id="tab-home"
-                className={`btn btn-sm rounded-pill text-nowrap px-2.5 ${
-                  activeScreen === 'home'
+                className={`btn btn-sm rounded-pill text-nowrap px-2.5 ${activeScreen === 'home'
                     ? 'btn-primary text-white fw-bold shadow-sm'
                     : 'btn-light border-0 text-dark'
-                }`}
+                  }`}
                 style={activeScreen === 'home' ? { backgroundColor: '#0194f3', borderColor: '#0194f3' } : {}}
                 onClick={() => setActiveScreen('home')}
               >
@@ -177,11 +176,10 @@ export default function App() {
               <button
                 type="button"
                 id="tab-hotel-list"
-                className={`btn btn-sm rounded-pill text-nowrap px-2.5 ${
-                  activeScreen === 'hotels'
+                className={`btn btn-sm rounded-pill text-nowrap px-2.5 ${activeScreen === 'hotels'
                     ? 'btn-primary text-white fw-bold shadow-sm'
                     : 'btn-light border-0 text-dark'
-                }`}
+                  }`}
                 style={activeScreen === 'hotels' ? { backgroundColor: '#0194f3', borderColor: '#0194f3' } : {}}
                 onClick={() => setActiveScreen('hotels')}
               >
@@ -192,11 +190,10 @@ export default function App() {
               <button
                 type="button"
                 id="tab-cart"
-                className={`btn btn-sm rounded-pill text-nowrap px-2.5 ${
-                  activeScreen === 'cart'
+                className={`btn btn-sm rounded-pill text-nowrap px-2.5 ${activeScreen === 'cart'
                     ? 'btn-warning text-white fw-bold shadow-sm'
                     : 'btn-light border-0 text-dark'
-                }`}
+                  }`}
                 style={activeScreen === 'cart' ? { backgroundColor: '#ff5e1f', borderColor: '#ff5e1f' } : {}}
                 onClick={() => setActiveScreen('cart')}
               >
@@ -207,11 +204,10 @@ export default function App() {
               <button
                 type="button"
                 id="tab-messages"
-                className={`btn btn-sm rounded-pill text-nowrap px-2.5 ${
-                  activeScreen === 'messages' || activeScreen === 'chat-detail'
+                className={`btn btn-sm rounded-pill text-nowrap px-2.5 ${activeScreen === 'messages' || activeScreen === 'chat-detail'
                     ? 'btn-primary text-white fw-bold shadow-sm'
                     : 'btn-light border-0 text-dark'
-                }`}
+                  }`}
                 style={activeScreen === 'messages' || activeScreen === 'chat-detail' ? { backgroundColor: '#0194f3', borderColor: '#0194f3' } : {}}
                 onClick={() => setActiveScreen('messages')}
               >
@@ -222,11 +218,10 @@ export default function App() {
               <button
                 type="button"
                 id="tab-dashboard"
-                className={`btn btn-sm rounded-pill text-nowrap px-2.5 ${
-                  activeScreen === 'dashboard' || activeScreen === 'manage-hotels'
+                className={`btn btn-sm rounded-pill text-nowrap px-2.5 ${activeScreen === 'dashboard' || activeScreen === 'manage-hotels'
                     ? 'btn-dark text-white fw-bold shadow-sm'
                     : 'btn-light border-0 text-dark'
-                }`}
+                  }`}
                 onClick={() => setActiveScreen('dashboard')}
               >
                 <i className="bi bi-speedometer2 me-1"></i>
@@ -237,49 +232,7 @@ export default function App() {
 
           {/* Device View & Tools Switcher */}
           <div className="d-flex align-items-center justify-content-between justify-content-xl-end gap-2 w-100 w-xl-auto">
-            {/* View Mode Toggle: Desktop vs Mobile */}
-            <div className="btn-group btn-group-sm rounded-pill border p-0.5 bg-light" role="group">
-              <button
-                type="button"
-                className={`btn btn-sm rounded-pill px-2.5 ${
-                  viewMode === 'desktop'
-                    ? 'btn-primary text-white fw-bold shadow-sm'
-                    : 'btn-light border-0 text-secondary'
-                }`}
-                style={viewMode === 'desktop' ? { backgroundColor: '#0194f3', borderColor: '#0194f3' } : {}}
-                onClick={() => setViewMode('desktop')}
-                title="Xem giao diện máy tính (Desktop)"
-              >
-                <i className="bi bi-laptop me-1"></i>
-                Máy tính
-              </button>
-              <button
-                type="button"
-                className={`btn btn-sm rounded-pill px-2.5 ${
-                  viewMode === 'mobile'
-                    ? 'btn-primary text-white fw-bold shadow-sm'
-                    : 'btn-light border-0 text-secondary'
-                }`}
-                style={viewMode === 'mobile' ? { backgroundColor: '#0194f3', borderColor: '#0194f3' } : {}}
-                onClick={() => setViewMode('mobile')}
-                title="Xem giao diện điện thoại (Mobile)"
-              >
-                <i className="bi bi-phone me-1"></i>
-                Điện thoại
-              </button>
-            </div>
-
             <div className="d-flex align-items-center gap-1.5">
-              <button
-                type="button"
-                className="btn btn-sm btn-outline-secondary rounded-pill d-flex align-items-center gap-1 text-nowrap"
-                onClick={() => setShowCodeModal(true)}
-                title="Xem mã nguồn React JSX"
-              >
-                <i className="bi bi-code-slash"></i>
-                <span className="d-none d-sm-inline">Mã nguồn</span>
-              </button>
-
               <button
                 type="button"
                 className="btn btn-sm btn-outline-secondary rounded-pill d-flex align-items-center gap-1 text-nowrap"
@@ -306,7 +259,7 @@ export default function App() {
 
       {/* Floating Alert Message */}
       {alertMessage && (
-        <div className="container mb-3" style={{ maxWidth: viewMode === 'mobile' ? '460px' : '1240px' }}>
+        <div className="container-fluid mb-3 px-3 px-lg-5" style={{ maxWidth: viewMode === 'mobile' ? '460px' : 'none' }}>
           <div className="alert alert-info py-2 px-3 small d-flex align-items-center justify-content-between mb-0 shadow-sm rounded-3">
             <span>
               <i className="bi bi-info-circle-fill me-2"></i>
@@ -323,9 +276,9 @@ export default function App() {
 
       {/* Main Responsive App Container */}
       <main
-        className="container px-2 px-sm-3"
+        className="container-fluid px-3 px-lg-5"
         style={{
-          maxWidth: viewMode === 'mobile' ? '430px' : '1240px',
+          maxWidth: viewMode === 'mobile' ? '430px' : '100%',
           transition: 'max-width 0.3s ease',
         }}
       >
@@ -393,16 +346,21 @@ export default function App() {
         {activeScreen === 'chat-detail' && (
           /* SCREEN: TRÒ CHUYỆN VỚI KHÁCH SẠN (HOTEL CHAT CONVERSATION) */
           <ChatDetail
-            hotel={selectedChat}
-            onBack={() => setActiveScreen('messages')}
+            hotel={selectedChat} 
+            onBack={() => setActiveScreen('hotels')}
             onOpenDetails={() => {
               setAlertMessage(`Thông tin khách sạn: ${selectedChat?.name || 'Grand Azure Resort & Spa'}`);
               setTimeout(() => setAlertMessage(null), 3000);
             }}
           />
         )}
-
-        {activeScreen === 'auth' && (
+        <div
+          className="container-fluid px-3 px-lg-5"
+          style={{
+            maxWidth: '680 px',
+            transition: 'max-width 0.3s ease',
+          }}
+        >{activeScreen === 'auth' && (
           /* SCREEN 1: ĐĂNG NHẬP / ĐĂNG KÝ - TRAVELOKA */
           <AuthCard
             onLoginSuccess={handleLoginSuccess}
@@ -411,14 +369,14 @@ export default function App() {
           />
         )}
 
-        {activeScreen === 'reset-password' && (
-          /* SCREEN 2: QUÊN MẬT KHẨU - RESET PASSWORD */
-          <ResetPasswordCard
-            onBackToLogin={() => setActiveScreen('auth')}
-            onClose={() => setActiveScreen('auth')}
-          />
-        )}
-
+          {activeScreen === 'reset-password' && (
+            /* SCREEN 2: QUÊN MẬT KHẨU - RESET PASSWORD */
+            <ResetPasswordCard
+              onBackToLogin={() => setActiveScreen('auth')}
+              onClose={() => setActiveScreen('auth')}
+            />
+          )}
+        </div>
         {activeScreen === 'hotels' && (
           /* SCREEN 3: DANH SÁCH KHÁCH SẠN TRAVELOKA CÓ BỘ LỌC */
           <HotelList

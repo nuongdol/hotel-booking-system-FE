@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 // import { getAllRooms } from '../utils/ApiFunctions';
 import RoomCard from "./RoomCard";
 import { Col, Container, Row } from "react-bootstrap";
-import RoomFilter from "../common/RoomFilter";
-import RoomPaginator from "../common/RoomPaginator";
+import RoomFilter from "../../common/RoomFilter";
+import RoomPaginator from "../../common/RoomPaginator";
 
 const Room = () => {
     const [data, setDate] = useState([]);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import RoomFilter from '../common/RoomFilter';
-import RoomPaginator from '../common/RoomPaginator';
+import RoomFilter from '../../common/RoomFilter';
+import RoomPaginator from '../../common/RoomPaginator';
 // import { deleteRoom, getAllRooms } from '../utils/ApiFunctions';
 import { Col, Row } from "react-bootstrap";
 import { FaEdit, FaEye, FaPlus, FaTrashAlt } from "react-icons/fa";

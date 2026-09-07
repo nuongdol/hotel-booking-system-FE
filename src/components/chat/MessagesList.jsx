@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChatDetail } from './ChatDetail.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const CONVERSATIONS = [
   {
@@ -72,6 +73,7 @@ export const MessagesList = ({
       onSelectConversation(item);
     }
   };
+  const navigate = useNavigate();
 
   return (
     <div className="bg-white rounded-4 shadow-sm border overflow-hidden position-relative">

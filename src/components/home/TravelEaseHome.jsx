@@ -7,6 +7,7 @@ import { Coupon } from './CouponHome.jsx';
 import { PopularHotel } from './PopularHotel.jsx'
 
 
+
 const CATEGORIES = [
   { id: 'hotel', label: 'Khách sạn', icon: 'bi-building', badge: 'Hot' },
   { id: 'flight', label: 'Vé máy bay', icon: 'bi-airplane', badge: null },
@@ -274,6 +275,7 @@ export const TravelEaseHome = ({
         onNavigateToCart={onNavigateToCart}
         onNavigateToBookings={onNavigateToBookings}
         CATEGORIES={CATEGORIES}
+        setSelectedCategory={setSelectedCategory}
       />
 
       {/* ======================================================== */}
@@ -851,12 +853,12 @@ export const TravelEaseHome = ({
           <div className="col-12 col-md-4">
             <h5 className="small fw-bold text-white text-uppercase mb-2" style={{ fontSize: '12px' }}>Đối tác thanh toán uy tín</h5>
             <div className="d-flex flex-wrap justify-content-center gap-2 mb-3">
-                <span className="badge bg-light text-dark fw-bold px-2 py-1">VietQR</span>
-                <span className="badge bg-light text-dark fw-bold px-2 py-1">MoMo</span>
-                <span className="badge bg-light text-dark fw-bold px-2 py-1">ZaloPay</span>
-                <span className="badge bg-light text-dark fw-bold px-2 py-1">VISA</span>
-                <span className="badge bg-light text-dark fw-bold px-2 py-1">Mastercard</span>
-                <span className="badge bg-light text-dark fw-bold px-2 py-1">Napas</span>
+              <span className="badge bg-light text-dark fw-bold px-2 py-1">VietQR</span>
+              <span className="badge bg-light text-dark fw-bold px-2 py-1">MoMo</span>
+              <span className="badge bg-light text-dark fw-bold px-2 py-1">ZaloPay</span>
+              <span className="badge bg-light text-dark fw-bold px-2 py-1">VISA</span>
+              <span className="badge bg-light text-dark fw-bold px-2 py-1">Mastercard</span>
+              <span className="badge bg-light text-dark fw-bold px-2 py-1">Napas</span>
             </div>
             <span className="d-block small text-white-50" style={{ fontSize: '11px' }}>
               © {new Date().getFullYear()} Traveloka - Azure Horizon Booking Suite. All rights reserved.
@@ -866,14 +868,16 @@ export const TravelEaseHome = ({
       </footer>
 
       {/* ======================================================== */}
-      {/* 8. MOBILE STICKY BOTTOM NAVIGATION BAR                   */}
+      {/* 8. NAVIGATION BAR                   */}
       {/* ======================================================== */}
       <nav className="d-lg-none bg-white border-top py-2 px-3 d-flex align-items-center justify-content-around sticky-bottom shadow-lg" style={{ zIndex: 1040 }}>
         <button
           type="button"
-          className="btn btn-warning text-white fw-bold rounded-pill px-3 py-1.5 d-flex align-items-center gap-1.5 shadow-sm"
+          className="btn btn-link text-white fw-bold rounded-pill px-3 py-1.5 d-flex align-items-center gap-1.5 shadow-sm"
           style={{ backgroundColor: '#ff5e1f', borderColor: '#ff5e1f', fontSize: '12px' }}
-          onClick={() => setActiveBottomTab('explore')}
+          onClick={() => {
+            setActiveBottomTab('explore');
+          }}
         >
           <i className="bi bi-search"></i>
           <span>Khám phá</span>
@@ -881,11 +885,15 @@ export const TravelEaseHome = ({
 
         <button
           type="button"
-          className={`btn btn-link p-0 text-decoration-none d-flex flex-column align-items-center ${activeBottomTab === 'bookings' ? 'text-primary fw-bold' : 'text-secondary'
+          className={`btn btn-link p-0 text-decoration-none d-flex flex-column align-items-center position-relative ${activeBottomTab === 'bookings' ? 'text-primary fw-bold' : 'text-secondary'
             }`}
           onClick={() => {
             setActiveBottomTab('bookings');
-            if (onNavigateToBookings) onNavigateToBookings();
+            if (onNavigateToBookings) {
+              onNavigateToBookings();
+            } else {
+              navigate('/booking')
+            }
           }}
         >
           <i className="bi bi-calendar2-check fs-5"></i>
@@ -898,14 +906,16 @@ export const TravelEaseHome = ({
             }`}
           onClick={() => {
             setActiveBottomTab('cart');
-            if (onNavigateToCart) onNavigateToCart();
+            if (onNavigateToCart) { onNavigateToCart(); } else {
+              navigate('/cart-hotel')
+            }
           }}
         >
           <i className="bi bi-cart3 fs-5"></i>
           <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: '8px' }}>
             2
           </span>
-          <span style={{ fontSize: '10.5px' }}>Giỏ hàng</span>
+          <span style={{ fontSize: '10.5px' }}>Yêu thích</span>
         </button>
 
         <button

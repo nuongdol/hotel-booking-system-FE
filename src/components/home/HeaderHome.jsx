@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export const HeaderHome = ({onNavigateToDashboard, setActiveBottomTab,onNavigateToMessages, selectedCategory, onNavigateToCart, onNavigateToBookings, onNavigateToAuth, CATEGORIES }) => {
+export const HeaderHome = ({ onNavigateToDashboard, setActiveBottomTab, onNavigateToMessages, selectedCategory, onNavigateToCart, onNavigateToBookings, onNavigateToAuth, setSelectedCategory, CATEGORIES }) => {
+    const navigate = useNavigate();
     return (
         <>
             <header className="bg-white border-bottom sticky-top" style={{ zIndex: 1020 }}>
@@ -20,7 +22,7 @@ export const HeaderHome = ({onNavigateToDashboard, setActiveBottomTab,onNavigate
                             <button
                                 type="button"
                                 className="btn btn-link p-0 text-decoration-none text-secondary small d-flex align-items-center gap-1"
-                                onClick={onNavigateToDashboard}
+                                onClick={() => { navigate('/dash-board') }}
                             >
                                 <i className="bi bi-buildings text-primary"></i> Hợp tác với Traveloka (Dành cho Chủ Khách Sạn)
                             </button>
@@ -67,7 +69,7 @@ export const HeaderHome = ({onNavigateToDashboard, setActiveBottomTab,onNavigate
                         <button
                             type="button"
                             className="btn btn-light btn-sm d-flex align-items-center gap-1 text-secondary border-0"
-                            onClick={onNavigateToMessages}
+                            onClick={() => navigate('/chat')}
                             title="Tin nhắn & Trò chuyện"
                         >
                             <i className="bi bi-chat-dots text-primary fs-5"></i>
@@ -77,11 +79,11 @@ export const HeaderHome = ({onNavigateToDashboard, setActiveBottomTab,onNavigate
                         <button
                             type="button"
                             className="btn btn-light btn-sm d-flex align-items-center gap-1 text-secondary border-0 position-relative"
-                            onClick={onNavigateToCart}
-                            title="Giỏ hàng"
+                            onClick={() => { navigate('/cart-hotel') }}
+                            title="Yêu thích"
                         >
                             <i className="bi bi-cart3 text-warning fs-5"></i>
-                            <span className="d-none d-md-inline small fw-semibold">Giỏ hàng</span>
+                            <span className="d-none d-md-inline small fw-semibold">Yêu thích</span>
                             <span className="position-absolute top-1 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: '9px' }}>
                                 2
                             </span>
@@ -90,18 +92,26 @@ export const HeaderHome = ({onNavigateToDashboard, setActiveBottomTab,onNavigate
                         <button
                             type="button"
                             className="btn btn-light btn-sm d-none d-md-flex align-items-center gap-1 text-secondary border-0"
-                            onClick={onNavigateToBookings}
+                            onClick={() => { navigate('/booking') }}
                             title="Đặt chỗ của tôi"
                         >
                             <i className="bi bi-calendar2-check text-success fs-5"></i>
                             <span className="small fw-semibold">Đặt chỗ</span>
                         </button>
-
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-outline-secondary rounded-pill d-flex align-items-center gap-1 text-nowrap"
+                            onClick={() => {navigate('/help')}}
+                            title="Hướng dẫn sử dụng"
+                        >
+                            <i className="bi bi-question-circle"></i>
+                            <span className="d-none d-sm-inline">Trợ giúp</span>
+                        </button>
                         <button
                             type="button"
                             className="btn btn-outline-primary btn-sm px-3 fw-bold rounded-pill d-flex align-items-center gap-1"
                             style={{ borderColor: '#0194f3', color: '#0194f3' }}
-                            onClick={onNavigateToAuth}
+                            onClick={() => { navigate('/login') }}
                         >
                             <i className="bi bi-person-circle"></i>
                             <span>Đăng nhập</span>
@@ -111,7 +121,7 @@ export const HeaderHome = ({onNavigateToDashboard, setActiveBottomTab,onNavigate
                             type="button"
                             className="btn btn-primary btn-sm px-3 fw-bold rounded-pill d-none d-sm-inline-flex align-items-center"
                             style={{ backgroundColor: '#0194f3', borderColor: '#0194f3' }}
-                            onClick={onNavigateToAuth}
+                            onClick={() => { navigate('/sign-up') }}
                         >
                             Đăng ký
                         </button>

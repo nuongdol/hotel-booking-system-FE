@@ -1,5 +1,5 @@
 import './App.css'
-import RoomListForm from './components/room/RoomListForm.jsx'
+import RoomListForm from './components/room/oldFormat/RoomListForm.jsx'
 import { Route, Routes } from 'react-router-dom'
 import {HotelList} from './components/hotel/HotelList.jsx'
 import { ManageHotels } from './components/hotel/ManageHotels.jsx'
@@ -11,6 +11,10 @@ import { AuthCard } from './components/auth/AuthCard.jsx'
 import { ResetPasswordCard } from './components/auth/ResetPasswordCard.jsx'
 import { TravelEaseHome } from './components/home/TravelEaseHome.jsx'
 import { OtpVerify } from './components/auth/OtpVerify.jsx'
+import { CartScreen } from './components/room/roomList/CartScreen.jsx'
+import { ChatDetail } from './components/chat/ChatDetail.jsx'
+import { HelpModal } from './components/room/roomList/HelpModal.jsx'
+
 
 
 function App() {
@@ -28,6 +32,10 @@ function App() {
 				<Route path="/reset-password" element={<ResetPasswordCard />}/>
 				<Route path='/home'element={<TravelEaseHome />}/>
 				<Route path='/otp-vertify' element={<OtpVerify />} />
+				<Route path='/cart-hotel' element={<CartScreen/>}/>
+				<Route path='/chat' element={<ChatDetail/>}/>
+				<Route path='/help' element={<HelpModal show={true}
+				onClose={false}/>}/>
 			</Routes>
 		</main>
 	)

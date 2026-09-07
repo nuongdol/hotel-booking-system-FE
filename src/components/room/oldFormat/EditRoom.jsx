@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 // import { getRoomById, updateRoom } from '../utils/ApiFunctions';
 import { Link, useParams } from 'react-router-dom';
-import RoomTypeSelector from '../common/RoomTypeSelector'
+import RoomTypeSelector from '../../common/RoomTypeSelector'
 
 const EditRoom = () => {
     const [room, setRoom] = useState({

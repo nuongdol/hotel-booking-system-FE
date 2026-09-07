@@ -1,24 +1,24 @@
 import { useState } from 'react';
-import { AuthCard } from '../auth/AuthCard.jsx';
-import { ResetPasswordCard } from '../auth/ResetPasswordCard.jsx';
-import { BookingSummary } from '../bookings/BookingSummary.jsx';
-import { AddPropertyCard } from '../common/AddPropertyCard.jsx';
-import { OwnerDashboard } from '../home/OwnerDashboard.jsx';
-import { TravelEaseHome } from '../home/TravelEaseHome.jsx';
-import { HotelList } from '../hotel/HotelList.jsx';
-import { ManageHotels } from '../hotel/ManageHotels.jsx';
-import { SecureCheckout } from '../payment/SecureCheckout.jsx';
-import { BasicInfoCard } from '../room/cartRoom/BasicInfoCard.jsx';
-import { AmenitiesCard } from './roomList/AmenitiesCard.jsx';
-import { CartScreen } from './roomList/CartScreen.jsx';
-import { ChatDetail } from './roomList/ChatDetail.jsx';
-import { CodeModal } from './roomList/CodeModal.jsx';
-import { Header } from './roomList/Header.jsx';
-import { HelpModal } from './roomList/HelpModal.jsx';
-import { ImagesCard } from './roomList/ImagesCard.jsx';
-import { MessagesList } from './roomList/MessagesList.jsx';
-import { StepProgress } from './roomList/StepProgress.jsx';
-import { SuccessModal } from './roomList/SuccessModal.jsx';
+import { AuthCard } from '../../auth/AuthCard.jsx';
+import { ResetPasswordCard } from '../../auth/ResetPasswordCard.jsx';
+import { BookingSummary } from '../../bookings/BookingSummary.jsx';
+import { AddPropertyCard } from '../../common/AddPropertyCard.jsx';
+import { OwnerDashboard } from '../../home/OwnerDashboard.jsx';
+import { TravelEaseHome } from '../../home/TravelEaseHome.jsx';
+import { HotelList } from '../../hotel/HotelList.jsx';
+import { ManageHotels } from '../../hotel/ManageHotels.jsx';
+import { SecureCheckout } from '../../payment/SecureCheckout.jsx';
+import { BasicInfoCard } from '../cartRoom/BasicInfoCard.jsx';
+import { AmenitiesCard } from '../roomList/AmenitiesCard.jsx';
+import { CartScreen } from '../roomList/CartScreen.jsx';
+import { ChatDetail } from '../../chat/ChatDetail.jsx';
+import { CodeModal } from '../roomList/CodeModal.jsx';
+import { Header } from '../roomList/Header.jsx';
+import { HelpModal } from '../roomList/HelpModal.jsx';
+import { ImagesCard } from '../roomList/ImagesCard.jsx';
+import { MessagesList } from '../../chat/MessagesList.jsx';
+import { StepProgress } from '../roomList/StepProgress.jsx';
+import { SuccessModal } from '../roomList/SuccessModal.jsx';
 
 const INITIAL_ROOM_STATE = {
   name: '',

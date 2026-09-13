@@ -1,44 +1,103 @@
 import axios from "axios";
+import { getAccessToken, setAccessToken, clearAccessToken } from "./token/tokenStore";
+
 
 export const api = axios.create({
-    baseURL: "http://localhost:9192/api/v1"
-})
-
-export const getHeader = ()=>{
-    const token = localStorage.getItem("token");
-    return {
-        Authorization : `Bearer ${token}`,
-        "Content-Type": "application/json"
+    baseURL: "http://localhost:9192/api/v1",
+    withCredentials: true, //auto send and reciever cookie
+    headers: {
+        'Content-Type':'application/json',
     }
-}
+});
 
-/*this functiong adds a new room room to the database  */
-export async function addRoom(imageRoom, roomType, roomPrice,isBook) {
-    const formData = new FormData();
-    formData.append("imageRoom", imageRoom)
-    formData.append("roomType", roomType)
-    formData.append("roomPrice", roomPrice)
-    formData.append("isBook", isBook)
+// axios refreshToken, tránh interceptor loop vô hạn
+const refreshApi = axios.create({
+    baseURL: "http://localhost:9192/api/v1",
+    withCredentials: true,
+    headers:{
+        'Content-Type': 'application/json'
+    },
+});
 
-    const response = await api.post("/rooms", formData)
-    if (response.status === 201) {
-        return true
-    } else {
-        return false
+//accessToken vào mọi request
+api.interceptors.request.use(
+    (config) => {
+        const token = getAccessToken();
+        if(token && !config.skipAuth){
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
+
+// tự động refresh -> retry request cũ
+let isRefreshing = false;
+let failedQueue = [];// các request bị 401 trong lúc refresh
+
+const processQueue = (error, token = null) =>{
+    failedQueue.forEach((promise)=>{
+        if(error){
+            promise.reject(error);
+        }else{
+            promise.resolve(token);
+        }
+    });
+    failedQueue = [];
+};
+
+api.interceptors.response.use(
+    (response) => response,
+    async (error) =>{
+        const originalRequest = error.config;
+
+        if(error.respons?.status !== 401){
+            return Promise.reject(error);
+        }
+        //refresh roi ma van 401 -> logout
+        if(originalRequest._retry){
+            return Promise.reject(error);
+        }
+        //khong refresh url /auth/refresh
+        if(originalRequest.url?.includes('/auth/refresh-token')){
+            return Promise.reject(error);
+        }
+        //dang refresh -> wait queue
+        if(isRefreshing){
+            return new Promise((resolve, reject)=>{
+                failedQueue.push({resolve, reject});
+            })
+            .then((newToken) =>{
+                originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                return api(originalRequest);
+            })
+            .catch((err) => Promise.reject(err));
+        }
+        //bat dau refresh
+        originalRequest._retry = true;
+        isRefreshing = true;
+        try{
+            const response = await refreshApi.post('/auth/refresh-token');
+            const newToken = response.data.accessToken;
+            setAccessToken(newToken);
+            processQueue(null, newToken);
+            //retry request cu vs token moi
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            return api(originalRequest);
+        }catch(refreshError){
+            //refresh that bai-> logout
+            processQueue(refreshError, null);
+            clearAccessToken();
+
+            // Phát event để AuthContext biết mà set user = null
+            window.dispatchEvent(new Event('auth:logout'));
+            return Promise.reject(refreshError);
+        }finally{
+            isRefreshing = false;
+        }
     }
-}
+);
 
-/* this function gets all room types from the database*/
-export async function getRoomTypes() {
-    try {
-        const response = await api.get("/rooms/type");
-        return response.data;
-
-    } catch (error) {
-        throw new Error("Error fetching room types.")
-
-    }
-}
 
 /*lấy thành phố du lịch */
 export async function getCitys(){

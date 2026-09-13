@@ -111,7 +111,7 @@ export const HeaderHome = ({ onNavigateToDashboard, setActiveBottomTab, onNaviga
                             type="button"
                             className="btn btn-outline-primary btn-sm px-3 fw-bold rounded-pill d-flex align-items-center gap-1"
                             style={{ borderColor: '#0194f3', color: '#0194f3' }}
-                            onClick={() => { navigate('/login') }}
+                            onClick={() => { navigate('/auth/login') }}
                         >
                             <i className="bi bi-person-circle"></i>
                             <span>Đăng nhập</span>
@@ -121,7 +121,7 @@ export const HeaderHome = ({ onNavigateToDashboard, setActiveBottomTab, onNaviga
                             type="button"
                             className="btn btn-primary btn-sm px-3 fw-bold rounded-pill d-none d-sm-inline-flex align-items-center"
                             style={{ backgroundColor: '#0194f3', borderColor: '#0194f3' }}
-                            onClick={() => { navigate('/sign-up') }}
+                            onClick={() => { navigate('/auth/signup') }}
                         >
                             Đăng ký
                         </button>

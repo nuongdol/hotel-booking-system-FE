@@ -1,5 +1,4 @@
 import './App.css'
-import RoomListForm from './components/room/oldFormat/RoomListForm.jsx'
 import { Route, Routes } from 'react-router-dom'
 import {HotelList} from './components/hotel/HotelList.jsx'
 import { ManageHotels } from './components/hotel/ManageHotels.jsx'
@@ -17,25 +16,26 @@ import { HelpModal } from './components/room/roomList/HelpModal.jsx'
 
 
 
+
 function App() {
 	return (
 		<main>
 			<Routes>
 				<Route path="/lst-hotel" element={<HotelList />} />
-				<Route path="/" element={<RoomListForm />} />
 				<Route path="/hotel" element={<ManageHotels />} />
 				<Route path="/property-card" element={<AddPropertyCard />} />
 				<Route path="/dashboard" element={<OwnerDashboard />} />
 				<Route path="/payment" element={<SecureCheckout />} />
 				<Route path="/booking" element={<BookingSummary />}/>
 				<Route path="/auth" element={<AuthCard />}/>
-				<Route path="/reset-password" element={<ResetPasswordCard />}/>
+				<Route path="/forgot-password" element={<ResetPasswordCard />}/>
 				<Route path='/home'element={<TravelEaseHome />}/>
 				<Route path='/otp-vertify' element={<OtpVerify />} />
 				<Route path='/cart-hotel' element={<CartScreen/>}/>
 				<Route path='/chat' element={<ChatDetail/>}/>
 				<Route path='/help' element={<HelpModal show={true}
 				onClose={false}/>}/>
+				<Route path='/auth/:mode' element={<AuthCard/>}/>
 			</Routes>
 		</main>
 	)
